@@ -5,7 +5,13 @@ import { ArrowUpDown, Filter, Search, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Select } from "@/components/ui/select";
+import { 
+  Select,
+  SelectTrigger,
+  SelectContent,
+  SelectItem,
+  SelectValue
+} from "@/components/ui/select";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ThemeCard from "@/components/ThemeCard";
@@ -138,17 +144,17 @@ const Discover = () => {
                     value={sortBy}
                     onValueChange={setSortBy}
                   >
-                    <Select.Trigger className="w-full">
+                    <SelectTrigger className="w-full">
                       <ArrowUpDown className="mr-2 h-4 w-4" />
-                      <span>Sort by</span>
-                    </Select.Trigger>
-                    <Select.Content>
+                      <SelectValue>Sort by</SelectValue>
+                    </SelectTrigger>
+                    <SelectContent>
                       {sortOptions.map((option) => (
-                        <Select.Item key={option.value} value={option.value}>
+                        <SelectItem key={option.value} value={option.value}>
                           {option.label}
-                        </Select.Item>
+                        </SelectItem>
                       ))}
-                    </Select.Content>
+                    </SelectContent>
                   </Select>
                 </div>
                 
