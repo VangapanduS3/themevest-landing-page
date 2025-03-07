@@ -50,6 +50,13 @@
     --sidebar-border: 220 13% 91%;
 
     --sidebar-ring: 217.2 91.2% 59.8%;
+    
+    /* Theme colors */
+    --theme-tech: 219 91% 52%;
+    --theme-sustainability: 142 71% 45%;
+    --theme-healthcare: 197 100% 48%;
+    --theme-finance: 32 94% 56%;
+    --theme-luxury: 326 73% 53%;
   }
 }
 

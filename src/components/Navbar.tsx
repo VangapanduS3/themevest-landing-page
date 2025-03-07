@@ -1,11 +1,14 @@
+
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -17,11 +20,19 @@ const Navbar = () => {
   }, []);
 
   const navLinks = [
-    { name: "Discover", href: "#themes" },
-    { name: "Features", href: "#features" },
-    { name: "Testimonials", href: "#testimonials" },
-    { name: "How It Works", href: "#how-it-works" },
+    { name: "Discover", href: "/discover" },
+    { name: "Features", href: "/#features" },
+    { name: "Testimonials", href: "/#testimonials" },
+    { name: "How It Works", href: "/#how-it-works" },
   ];
+
+  // Adjust paths for hash links based on current location
+  const getAdjustedPath = (href: string) => {
+    if (href.startsWith("/#") && location.pathname !== "/") {
+      return href.replace("/#", "/");
+    }
+    return href;
+  };
 
   return (
     <header
@@ -31,23 +42,28 @@ const Navbar = () => {
       )}
     >
       <div className="container flex items-center justify-between">
-        <a href="/" className="flex items-center space-x-2">
+        <Link to="/" className="flex items-center space-x-2">
           <div className="w-8 h-8 bg-primary rounded-md flex items-center justify-center">
             <span className="text-white font-bold">T</span>
           </div>
           <span className="font-bold text-xl">ThemeVest</span>
-        </a>
+        </Link>
         
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-8">
           {navLinks.map((link) => (
-            <a
+            <Link
               key={link.name}
-              href={link.href}
-              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+              to={getAdjustedPath(link.href)}
+              className={cn(
+                "text-sm font-medium transition-colors",
+                (location.pathname === link.href || (location.pathname === "/" && link.href.startsWith("/#")))
+                  ? "text-foreground"
+                  : "text-muted-foreground hover:text-foreground"
+              )}
             >
               {link.name}
-            </a>
+            </Link>
           ))}
         </nav>
         
@@ -76,14 +92,19 @@ const Navbar = () => {
         <div className="md:hidden absolute top-full left-0 right-0 bg-white border-b border-gray-200 shadow-lg animate-fade-in">
           <div className="container py-4 space-y-4">
             {navLinks.map((link) => (
-              <a
+              <Link
                 key={link.name}
-                href={link.href}
-                className="block py-2 text-base font-medium text-foreground hover:text-primary"
+                to={getAdjustedPath(link.href)}
+                className={cn(
+                  "block py-2 text-base font-medium hover:text-primary",
+                  (location.pathname === link.href || (location.pathname === "/" && link.href.startsWith("/#")))
+                    ? "text-foreground"
+                    : "text-muted-foreground"
+                )}
                 onClick={() => setMobileMenuOpen(false)}
               >
                 {link.name}
-              </a>
+              </Link>
             ))}
             <div className="pt-4 flex flex-col space-y-3">
               <Button variant="outline" className="w-full rounded-full">

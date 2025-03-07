@@ -3,6 +3,7 @@ import { useEffect, useRef } from "react";
 import { ArrowUpRight, TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { Link } from "react-router-dom";
 
 interface ThemeCardProps {
   title: string;
@@ -165,9 +166,11 @@ const PortfolioThemes = () => {
         </div>
         
         <div className="mt-12 text-center animate-on-scroll opacity-0">
-          <Button variant="outline" className="rounded-full">
-            View All Themes
-            <ArrowUpRight className="ml-2 h-4 w-4" />
+          <Button variant="outline" className="rounded-full" asChild>
+            <Link to="/discover">
+              View All Themes
+              <ArrowUpRight className="ml-2 h-4 w-4" />
+            </Link>
           </Button>
         </div>
       </div>
