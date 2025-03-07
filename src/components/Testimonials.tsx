@@ -60,6 +60,7 @@ const Testimonials = () => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             entry.target.classList.add("animate-fade-up");
+            // Don't unobserve to prevent elements from disappearing
           }
         });
       },

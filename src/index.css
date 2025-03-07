@@ -151,4 +151,11 @@
   .transition-gpu {
     transform: translateZ(0);
   }
+
+  /* Fixed animation to prevent disappearance */
+  .animate-on-scroll.animate-fade-up {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+    transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+  }
 }

@@ -72,54 +72,48 @@ const ThemeCard = ({ title, description, returns, type, stockCount, index }: The
 const PortfolioThemes = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   
-  const themes: ThemeCardProps[] = [
+  const themes: Omit<ThemeCardProps, "index">[] = [
     {
       title: "Future Tech",
       description: "Companies shaping the technological landscape with AI, robotics, and quantum computing.",
       returns: "+24.8%",
       type: "tech",
-      stockCount: 18,
-      index: 0
+      stockCount: 18
     },
     {
       title: "Green Energy",
       description: "Renewable energy innovators and sustainable technology leaders.",
       returns: "+16.2%",
       type: "sustainability",
-      stockCount: 15,
-      index: 1
+      stockCount: 15
     },
     {
       title: "Biotech Revolution",
       description: "Companies pioneering genomics, precision medicine, and healthcare innovation.",
       returns: "+19.5%",
       type: "healthcare",
-      stockCount: 12,
-      index: 2
+      stockCount: 12
     },
     {
       title: "FinTech Disruptors",
       description: "Digital payment, blockchain, and financial service innovators.",
       returns: "+21.7%",
       type: "finance",
-      stockCount: 14,
-      index: 3
+      stockCount: 14
     },
     {
       title: "Luxury Brands",
       description: "Premium and luxury consumer brands with strong global presence.",
       returns: "+15.3%",
       type: "luxury",
-      stockCount: 10,
-      index: 4
+      stockCount: 10
     },
     {
       title: "Clean Water",
       description: "Companies focused on water purification, conservation, and infrastructure.",
       returns: "+12.9%",
       type: "sustainability",
-      stockCount: 11,
-      index: 5
+      stockCount: 11
     }
   ];
 
@@ -129,6 +123,7 @@ const PortfolioThemes = () => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             entry.target.classList.add("animate-fade-up");
+            // Don't unobserve to prevent elements from disappearing
           }
         });
       },
@@ -164,8 +159,8 @@ const PortfolioThemes = () => {
         </div>
         
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {themes.map((theme) => (
-            <ThemeCard key={theme.title} {...theme} />
+          {themes.map((theme, index) => (
+            <ThemeCard key={theme.title} {...theme} index={index} />
           ))}
         </div>
         
