@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -18,11 +17,10 @@ const Navbar = () => {
   }, []);
 
   const navLinks = [
-    { name: "Themes", href: "#themes" },
-    { name: "How It Works", href: "#how-it-works" },
+    { name: "Discover", href: "#themes" },
     { name: "Features", href: "#features" },
     { name: "Testimonials", href: "#testimonials" },
-    { name: "Pricing", href: "#pricing" },
+    { name: "How It Works", href: "#how-it-works" },
   ];
 
   return (
