@@ -2,6 +2,7 @@
 import { ArrowUpRight, TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { Link } from "react-router-dom";
 
 export interface ThemeCardProps {
   title: string;
@@ -96,9 +97,12 @@ const ThemeCard = ({
           type === "industrial" && "text-slate-700 hover:text-slate-800",
           type === "telecom" && "text-cyan-700 hover:text-cyan-800"
         )}
+        asChild
       >
-        View Portfolio
-        <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
+        <Link to={`/portfolio/${encodeURIComponent(title)}`}>
+          View Portfolio
+          <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
+        </Link>
       </Button>
     </div>
   );
