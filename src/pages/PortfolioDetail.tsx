@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { ArrowLeft, TrendingUp, TrendingDown, Info } from "lucide-react";
@@ -22,7 +21,6 @@ import {
   Legend,
 } from "recharts";
 
-// Mock performance data
 const generatePerformanceData = (seed: number, volatility: number) => {
   const timeframes = {
     "1M": { points: 30, baseline: seed * 0.3 },
@@ -38,11 +36,9 @@ const generatePerformanceData = (seed: number, volatility: number) => {
     let value = 100;
 
     for (let i = 0; i < points; i++) {
-      // More volatile for high risk, less for low risk
       const change = (Math.random() - 0.48) * volatility;
       value += change;
       
-      // Trend upward based on the baseline return
       value += (baseline / points);
 
       const date = new Date();
@@ -60,7 +56,6 @@ const generatePerformanceData = (seed: number, volatility: number) => {
   return result;
 };
 
-// Mock market indicators
 const generateMarketIndicators = (returnValue: string, riskLevel: string) => {
   const returnNum = parseFloat(returnValue.replace("+", "").replace("%", ""));
   
@@ -77,7 +72,6 @@ const generateMarketIndicators = (returnValue: string, riskLevel: string) => {
   };
 };
 
-// Stock holdings data
 const generateStockHoldings = (count: number, type: string) => {
   const stocksByType: { [key: string]: string[] } = {
     tech: ["Apple", "Microsoft", "Google", "NVIDIA", "Amazon", "Meta", "Adobe", "Oracle", "Salesforce", "Intel", "AMD", "PayPal", "Tesla", "Cisco", "IBM"],
@@ -101,11 +95,9 @@ const generateStockHoldings = (count: number, type: string) => {
   for (let i = 0; i < count && i < available.length; i++) {
     selected.push(available[i]);
     
-    // Last item gets remaining weight
     if (i === count - 1 || i === available.length - 1) {
       weights.push(remainingWeight);
     } else {
-      // Random weight between 5% and 20%
       const weight = Math.floor(Math.random() * 15) + 5;
       weights.push(weight);
       remainingWeight -= weight;
@@ -117,6 +109,14 @@ const generateStockHoldings = (count: number, type: string) => {
     weight: weights[index] + "%",
     performance: "+" + (Math.random() * 30 + 5).toFixed(1) + "%"
   }));
+};
+
+const marketIndicatorDefinitions = {
+  volatility: "Measures the degree of variation in returns over time. Higher values indicate greater risk.",
+  sharpeRatio: "Measures risk-adjusted returns. Higher values indicate better risk-adjusted performance.",
+  alpha: "Excess return relative to a benchmark. Positive values indicate outperformance.",
+  beta: "Measures sensitivity to market movements. Values above 1 indicate higher volatility than the market.",
+  maxDrawdown: "Largest drop from peak to trough. Indicates potential downside risk."
 };
 
 const PortfolioDetail = () => {
@@ -135,7 +135,6 @@ const PortfolioDetail = () => {
       if (foundPortfolio) {
         setPortfolio(foundPortfolio);
         
-        // Generate performance data based on the portfolio returns
         const returnValue = parseFloat(foundPortfolio.returns.replace("+", "").replace("%", ""));
         const volatility = foundPortfolio.riskLevel === "Low" ? 2 : 
                           foundPortfolio.riskLevel === "Medium" ? 3 : 4.5;
@@ -174,7 +173,6 @@ const PortfolioDetail = () => {
       
       <main className="flex-grow pt-24 pb-16">
         <div className="container">
-          {/* Navigation */}
           <div className="mb-8">
             <Button variant="ghost" size="sm" asChild>
               <Link to="/discover" className="flex items-center text-muted-foreground hover:text-foreground">
@@ -184,7 +182,6 @@ const PortfolioDetail = () => {
             </Button>
           </div>
           
-          {/* Portfolio Header */}
           <div className="mb-10">
             <div className="flex flex-wrap items-start justify-between gap-4 mb-6">
               <div>
@@ -245,9 +242,7 @@ const PortfolioDetail = () => {
           </div>
           
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Main Content */}
             <div className="lg:col-span-2">
-              {/* Performance Chart */}
               <Card className="mb-8">
                 <CardContent className="pt-6">
                   <div className="flex items-center justify-between mb-4">
@@ -323,7 +318,6 @@ const PortfolioDetail = () => {
                 </CardContent>
               </Card>
               
-              {/* Stock Holdings */}
               <Card>
                 <CardContent className="pt-6">
                   <h3 className="text-xl font-semibold mb-6">Holdings ({portfolio.stockCount} Stocks)</h3>
@@ -352,9 +346,7 @@ const PortfolioDetail = () => {
               </Card>
             </div>
             
-            {/* Sidebar */}
             <div>
-              {/* Market Indicators */}
               <Card className="mb-6">
                 <CardContent className="pt-6">
                   <h3 className="text-xl font-semibold mb-4">Market Indicators</h3>
@@ -366,11 +358,13 @@ const PortfolioDetail = () => {
                           <span className="text-sm text-muted-foreground">Volatility</span>
                           <TooltipProvider>
                             <Tooltip>
-                              <TooltipTrigger>
-                                <Info className="h-3.5 w-3.5 text-muted-foreground" />
+                              <TooltipTrigger asChild>
+                                <button type="button" aria-label="More information about volatility">
+                                  <Info className="h-3.5 w-3.5 text-muted-foreground" />
+                                </button>
                               </TooltipTrigger>
                               <TooltipContent>
-                                <p className="max-w-xs text-xs">Measures the degree of variation in returns over time. Higher values indicate greater risk.</p>
+                                <p className="max-w-xs text-xs">{marketIndicatorDefinitions.volatility}</p>
                               </TooltipContent>
                             </Tooltip>
                           </TooltipProvider>
@@ -383,11 +377,13 @@ const PortfolioDetail = () => {
                           <span className="text-sm text-muted-foreground">Sharpe Ratio</span>
                           <TooltipProvider>
                             <Tooltip>
-                              <TooltipTrigger>
-                                <Info className="h-3.5 w-3.5 text-muted-foreground" />
+                              <TooltipTrigger asChild>
+                                <button type="button" aria-label="More information about sharpe ratio">
+                                  <Info className="h-3.5 w-3.5 text-muted-foreground" />
+                                </button>
                               </TooltipTrigger>
                               <TooltipContent>
-                                <p className="max-w-xs text-xs">Measures risk-adjusted returns. Higher values indicate better risk-adjusted performance.</p>
+                                <p className="max-w-xs text-xs">{marketIndicatorDefinitions.sharpeRatio}</p>
                               </TooltipContent>
                             </Tooltip>
                           </TooltipProvider>
@@ -400,11 +396,13 @@ const PortfolioDetail = () => {
                           <span className="text-sm text-muted-foreground">Alpha</span>
                           <TooltipProvider>
                             <Tooltip>
-                              <TooltipTrigger>
-                                <Info className="h-3.5 w-3.5 text-muted-foreground" />
+                              <TooltipTrigger asChild>
+                                <button type="button" aria-label="More information about alpha">
+                                  <Info className="h-3.5 w-3.5 text-muted-foreground" />
+                                </button>
                               </TooltipTrigger>
                               <TooltipContent>
-                                <p className="max-w-xs text-xs">Excess return relative to a benchmark. Positive values indicate outperformance.</p>
+                                <p className="max-w-xs text-xs">{marketIndicatorDefinitions.alpha}</p>
                               </TooltipContent>
                             </Tooltip>
                           </TooltipProvider>
@@ -417,11 +415,13 @@ const PortfolioDetail = () => {
                           <span className="text-sm text-muted-foreground">Beta</span>
                           <TooltipProvider>
                             <Tooltip>
-                              <TooltipTrigger>
-                                <Info className="h-3.5 w-3.5 text-muted-foreground" />
+                              <TooltipTrigger asChild>
+                                <button type="button" aria-label="More information about beta">
+                                  <Info className="h-3.5 w-3.5 text-muted-foreground" />
+                                </button>
                               </TooltipTrigger>
                               <TooltipContent>
-                                <p className="max-w-xs text-xs">Measures sensitivity to market movements. Values above 1 indicate higher volatility than the market.</p>
+                                <p className="max-w-xs text-xs">{marketIndicatorDefinitions.beta}</p>
                               </TooltipContent>
                             </Tooltip>
                           </TooltipProvider>
@@ -434,11 +434,13 @@ const PortfolioDetail = () => {
                           <span className="text-sm text-muted-foreground">Max Drawdown</span>
                           <TooltipProvider>
                             <Tooltip>
-                              <TooltipTrigger>
-                                <Info className="h-3.5 w-3.5 text-muted-foreground" />
+                              <TooltipTrigger asChild>
+                                <button type="button" aria-label="More information about max drawdown">
+                                  <Info className="h-3.5 w-3.5 text-muted-foreground" />
+                                </button>
                               </TooltipTrigger>
                               <TooltipContent>
-                                <p className="max-w-xs text-xs">Largest drop from peak to trough. Indicates potential downside risk.</p>
+                                <p className="max-w-xs text-xs">{marketIndicatorDefinitions.maxDrawdown}</p>
                               </TooltipContent>
                             </Tooltip>
                           </TooltipProvider>
@@ -450,7 +452,6 @@ const PortfolioDetail = () => {
                 </CardContent>
               </Card>
               
-              {/* Portfolio Info */}
               <Card>
                 <CardContent className="pt-6">
                   <h3 className="text-xl font-semibold mb-4">Portfolio Details</h3>

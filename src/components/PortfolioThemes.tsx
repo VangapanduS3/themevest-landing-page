@@ -1,122 +1,16 @@
 
 import { useEffect, useRef } from "react";
-import { ArrowUpRight, TrendingUp } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
-
-interface ThemeCardProps {
-  title: string;
-  description: string;
-  returns: string;
-  type: "tech" | "sustainability" | "healthcare" | "finance" | "luxury";
-  stockCount: number;
-  index: number;
-}
-
-const ThemeCard = ({ title, description, returns, type, stockCount, index }: ThemeCardProps) => {
-  return (
-    <div 
-      className="portfolio-card opacity-0 animate-on-scroll"
-      style={{ animationDelay: `${index * 100}ms` }}
-    >
-      <div className={cn(
-        "theme-tag mb-4",
-        type === "tech" && "bg-theme-tech/10 text-theme-tech",
-        type === "sustainability" && "bg-theme-sustainability/10 text-theme-sustainability",
-        type === "healthcare" && "bg-theme-healthcare/10 text-theme-healthcare",
-        type === "finance" && "bg-theme-finance/10 text-theme-finance",
-        type === "luxury" && "bg-theme-luxury/10 text-theme-luxury"
-      )}>
-        {type.charAt(0).toUpperCase() + type.slice(1)}
-      </div>
-      
-      <h3 className="text-xl font-semibold mb-3">{title}</h3>
-      <p className="text-sm text-muted-foreground mb-6">{description}</p>
-      
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center">
-          <TrendingUp className={cn(
-            "h-4 w-4 mr-1",
-            type === "tech" && "text-theme-tech",
-            type === "sustainability" && "text-theme-sustainability",
-            type === "healthcare" && "text-theme-healthcare",
-            type === "finance" && "text-theme-finance",
-            type === "luxury" && "text-theme-luxury"
-          )} />
-          <span className="font-semibold">{returns}</span>
-          <span className="text-xs text-muted-foreground ml-1">YTD</span>
-        </div>
-        <div className="text-sm text-muted-foreground">
-          {stockCount} Stocks
-        </div>
-      </div>
-      
-      <Button
-        variant="ghost"
-        className={cn(
-          "w-full justify-between group",
-          type === "tech" && "text-theme-tech hover:text-theme-tech/90",
-          type === "sustainability" && "text-theme-sustainability hover:text-theme-sustainability/90",
-          type === "healthcare" && "text-theme-healthcare hover:text-theme-healthcare/90",
-          type === "finance" && "text-theme-finance hover:text-theme-finance/90",
-          type === "luxury" && "text-theme-luxury hover:text-theme-luxury/90"
-        )}
-      >
-        View Portfolio
-        <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
-      </Button>
-    </div>
-  );
-};
+import ThemeCard from "@/components/ThemeCard";
+import { portfolioThemes } from "@/data/portfolioData";
 
 const PortfolioThemes = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   
-  const themes: Omit<ThemeCardProps, "index">[] = [
-    {
-      title: "Future Tech",
-      description: "Companies shaping the technological landscape with AI, robotics, and quantum computing.",
-      returns: "+24.8%",
-      type: "tech",
-      stockCount: 18
-    },
-    {
-      title: "Green Energy",
-      description: "Renewable energy innovators and sustainable technology leaders.",
-      returns: "+16.2%",
-      type: "sustainability",
-      stockCount: 15
-    },
-    {
-      title: "Biotech Revolution",
-      description: "Companies pioneering genomics, precision medicine, and healthcare innovation.",
-      returns: "+19.5%",
-      type: "healthcare",
-      stockCount: 12
-    },
-    {
-      title: "FinTech Disruptors",
-      description: "Digital payment, blockchain, and financial service innovators.",
-      returns: "+21.7%",
-      type: "finance",
-      stockCount: 14
-    },
-    {
-      title: "Luxury Brands",
-      description: "Premium and luxury consumer brands with strong global presence.",
-      returns: "+15.3%",
-      type: "luxury",
-      stockCount: 10
-    },
-    {
-      title: "Clean Water",
-      description: "Companies focused on water purification, conservation, and infrastructure.",
-      returns: "+12.9%",
-      type: "sustainability",
-      stockCount: 11
-    }
-  ];
+  // Display just the first 6 themes on the homepage
+  const displayThemes = portfolioThemes.slice(0, 6);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -160,8 +54,23 @@ const PortfolioThemes = () => {
         </div>
         
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {themes.map((theme, index) => (
-            <ThemeCard key={theme.title} {...theme} index={index} />
+          {displayThemes.map((theme, index) => (
+            <div 
+              key={theme.title} 
+              className="opacity-0 animate-on-scroll"
+              style={{ animationDelay: `${index * 100}ms` }}
+            >
+              <ThemeCard 
+                title={theme.title}
+                description={theme.description}
+                returns={theme.returns}
+                type={theme.type}
+                stockCount={theme.stockCount}
+                index={index}
+                popularity={theme.popularity}
+                riskLevel={theme.riskLevel}
+              />
+            </div>
           ))}
         </div>
         
