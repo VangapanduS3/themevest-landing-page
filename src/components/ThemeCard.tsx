@@ -24,10 +24,7 @@ const ThemeCard = ({
   riskLevel 
 }: ThemeCardProps) => {
   return (
-    <div 
-      className="portfolio-card opacity-0 animate-on-scroll"
-      style={{ animationDelay: `${index * 100}ms` }}
-    >
+    <div className="portfolio-card">
       <div className="flex justify-between items-start mb-4">
         <div className={cn(
           "theme-tag",
