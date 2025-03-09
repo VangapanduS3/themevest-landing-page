@@ -20,7 +20,6 @@ const ThemeCard = ({
   description, 
   returns, 
   type, 
-  stockCount, 
   index, 
   riskLevel 
 }: ThemeCardProps) => {
@@ -75,9 +74,6 @@ const ThemeCard = ({
           )} />
           <span className="font-semibold">{returns}</span>
           <span className="text-xs text-muted-foreground ml-1">YTD</span>
-        </div>
-        <div className="text-sm text-muted-foreground">
-          {stockCount} Stocks
         </div>
       </div>
       

@@ -206,7 +206,12 @@ const Discover = () => {
                       <Badge 
                         key={risk} 
                         variant={selectedRisk === risk ? "default" : "outline"}
-                        className="cursor-pointer"
+                        className={cn(
+                          "cursor-pointer",
+                          selectedRisk !== risk && risk === "Low" && "border-green-200 text-green-700",
+                          selectedRisk !== risk && risk === "Medium" && "border-amber-200 text-amber-700",
+                          selectedRisk !== risk && risk === "High" && "border-red-200 text-red-700"
+                        )}
                         onClick={() => setSelectedRisk(selectedRisk === risk ? null : risk)}
                       >
                         {risk}
@@ -236,7 +241,12 @@ const Discover = () => {
                 {selectedRisk && (
                   <Badge 
                     variant="secondary"
-                    className="flex items-center gap-1"
+                    className={cn(
+                      "flex items-center gap-1",
+                      selectedRisk === "Low" && "bg-green-100 text-green-700",
+                      selectedRisk === "Medium" && "bg-amber-100 text-amber-700",
+                      selectedRisk === "High" && "bg-red-100 text-red-700"
+                    )}
                   >
                     Risk: {selectedRisk}
                     <X 

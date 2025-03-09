@@ -260,10 +260,10 @@ const PortfolioDetail = () => {
                   
                   {performanceData && (
                     <div className="h-80">
-                      <ResponsiveContainer width="99%" height="100%">
+                      <ResponsiveContainer width="95%" height="100%">
                         <LineChart 
                           data={performanceData[timeframe]} 
-                          margin={{ top: 10, right: 30, left: 10, bottom: 10 }}
+                          margin={{ top: 5, right: 5, left: 5, bottom: 25 }}
                         >
                           <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                           <XAxis 
@@ -274,12 +274,14 @@ const PortfolioDetail = () => {
                             }}
                             tick={{ fontSize: 12 }}
                             tickCount={5}
+                            height={30}
+                            padding={{ left: 10, right: 10 }}
                           />
                           <YAxis 
                             tickFormatter={(tick) => `${tick}`} 
                             domain={['dataMin - 5', 'dataMax + 5']}
                             tick={{ fontSize: 12 }}
-                            width={40}
+                            width={45}
                           />
                           <RechartsTooltip 
                             formatter={(value: any) => [`${value}`, 'Value']}
@@ -289,7 +291,7 @@ const PortfolioDetail = () => {
                             }}
                             contentStyle={{ padding: '10px', borderRadius: '4px' }}
                           />
-                          <Legend />
+                          <Legend wrapperStyle={{ paddingTop: 10 }} />
                           <Line 
                             type="monotone" 
                             dataKey="value" 
