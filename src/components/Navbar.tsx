@@ -34,9 +34,7 @@ const Navbar = () => {
   ];
 
   const handleLogin = () => {
-    localStorage.setItem("isLoggedIn", "true");
-    setIsLoggedIn(true);
-    navigate("/dashboard");
+    navigate("/login");
   };
 
   const handleLogout = () => {
