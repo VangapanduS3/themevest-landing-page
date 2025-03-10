@@ -1,21 +1,28 @@
-
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
     };
     
+    const checkLogin = () => {
+      setIsLoggedIn(!!localStorage.getItem("isLoggedIn"));
+    };
+    
     window.addEventListener("scroll", handleScroll);
+    checkLogin();
+    
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -26,7 +33,18 @@ const Navbar = () => {
     { name: "How It Works", href: "/#how-it-works" },
   ];
 
-  // Adjust paths for hash links based on current location
+  const handleLogin = () => {
+    localStorage.setItem("isLoggedIn", "true");
+    setIsLoggedIn(true);
+    navigate("/dashboard");
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("isLoggedIn");
+    setIsLoggedIn(false);
+    navigate("/");
+  };
+
   const getAdjustedPath = (href: string) => {
     if (href.startsWith("/#") && location.pathname !== "/") {
       return href.replace("/#", "/");
@@ -65,13 +83,34 @@ const Navbar = () => {
               {link.name}
             </Link>
           ))}
+          {isLoggedIn && (
+            <Link
+              to="/dashboard"
+              className={cn(
+                "text-sm font-medium transition-colors",
+                location.pathname === "/dashboard"
+                  ? "text-foreground"
+                  : "text-muted-foreground hover:text-foreground"
+              )}
+            >
+              Dashboard
+            </Link>
+          )}
         </nav>
         
         <div className="hidden md:flex items-center space-x-4">
-          <Button variant="outline" className="rounded-full">
-            Log in
-          </Button>
-          <Button className="rounded-full">Get Started</Button>
+          {isLoggedIn ? (
+            <Button variant="outline" className="rounded-full" onClick={handleLogout}>
+              Log out
+            </Button>
+          ) : (
+            <>
+              <Button variant="outline" className="rounded-full" onClick={handleLogin}>
+                Log in
+              </Button>
+              <Button className="rounded-full">Get Started</Button>
+            </>
+          )}
         </div>
         
         {/* Mobile menu button */}
@@ -106,11 +145,33 @@ const Navbar = () => {
                 {link.name}
               </Link>
             ))}
+            {isLoggedIn && (
+              <Link
+                to="/dashboard"
+                className={cn(
+                  "block py-2 text-base font-medium hover:text-primary",
+                  location.pathname === "/dashboard"
+                    ? "text-foreground"
+                    : "text-muted-foreground"
+                )}
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Dashboard
+              </Link>
+            )}
             <div className="pt-4 flex flex-col space-y-3">
-              <Button variant="outline" className="w-full rounded-full">
-                Log in
-              </Button>
-              <Button className="w-full rounded-full">Get Started</Button>
+              {isLoggedIn ? (
+                <Button variant="outline" className="w-full rounded-full" onClick={handleLogout}>
+                  Log out
+                </Button>
+              ) : (
+                <>
+                  <Button variant="outline" className="w-full rounded-full" onClick={handleLogin}>
+                    Log in
+                  </Button>
+                  <Button className="w-full rounded-full">Get Started</Button>
+                </>
+              )}
             </div>
           </div>
         </div>
