@@ -2,6 +2,7 @@
 import { useEffect, useRef } from "react";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 const Hero = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -60,12 +61,16 @@ const Hero = () => {
         
         {/* CTA buttons */}
         <div className="animate-on-scroll opacity-0 flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
-          <Button className="rounded-full min-w-[180px] h-12 text-base button-shine" size="lg">
-            Explore Themes
-            <ArrowRight className="ml-2 h-5 w-5" />
+          <Button className="rounded-full min-w-[180px] h-12 text-base button-shine" size="lg" asChild>
+            <Link to="/discover">
+              Explore Themes
+              <ArrowRight className="ml-2 h-5 w-5" />
+            </Link>
           </Button>
-          <Button variant="outline" className="rounded-full min-w-[180px] h-12 text-base" size="lg">
-            How It Works
+          <Button variant="outline" className="rounded-full min-w-[180px] h-12 text-base" size="lg" asChild>
+            <Link to="/how-it-works">
+              How It Works
+            </Link>
           </Button>
         </div>
         

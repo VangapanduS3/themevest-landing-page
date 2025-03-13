@@ -27,12 +27,24 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const navLinks = [
-    { name: "Discover", href: "/discover" },
-    { name: "Features", href: "/#features" },
-    { name: "Testimonials", href: "/testimonials" },
-    { name: "How It Works", href: "/how-it-works" },
-  ];
+  // Define navLinks based on login status
+  const getNavLinks = () => {
+    const links = [
+      { name: "Discover", href: "/discover" },
+      { name: "Features", href: "/features" },
+      { name: "Testimonials", href: "/testimonials" },
+      { name: "How It Works", href: "/how-it-works" },
+    ];
+    
+    // If logged in, add Dashboard as the first item
+    if (isLoggedIn) {
+      return [{ name: "Dashboard", href: "/dashboard" }, ...links];
+    }
+    
+    return links;
+  };
+
+  const navLinks = getNavLinks();
 
   const handleLogin = () => {
     navigate("/login");
@@ -82,19 +94,6 @@ const Navbar = () => {
               {link.name}
             </Link>
           ))}
-          {isLoggedIn && (
-            <Link
-              to="/dashboard"
-              className={cn(
-                "text-sm font-medium transition-colors",
-                location.pathname === "/dashboard"
-                  ? "text-foreground"
-                  : "text-muted-foreground hover:text-foreground"
-              )}
-            >
-              Dashboard
-            </Link>
-          )}
         </nav>
         
         <div className="hidden md:flex items-center space-x-4">
@@ -144,20 +143,6 @@ const Navbar = () => {
                 {link.name}
               </Link>
             ))}
-            {isLoggedIn && (
-              <Link
-                to="/dashboard"
-                className={cn(
-                  "block py-2 text-base font-medium hover:text-primary",
-                  location.pathname === "/dashboard"
-                    ? "text-foreground"
-                    : "text-muted-foreground"
-                )}
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Dashboard
-              </Link>
-            )}
             <div className="pt-4 flex flex-col space-y-3">
               {isLoggedIn ? (
                 <Button variant="outline" className="w-full rounded-full" onClick={handleLogout}>

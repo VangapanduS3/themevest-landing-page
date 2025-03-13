@@ -12,6 +12,7 @@ import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 import TestimonialsPage from "./pages/TestimonialsPage";
 import HowItWorksPage from "./pages/HowItWorksPage";
+import FeaturesPage from "./pages/FeaturesPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -36,6 +37,7 @@ const App = () => (
           <Route path="/login" element={<Login />} />
           <Route path="/testimonials" element={<TestimonialsPage />} />
           <Route path="/how-it-works" element={<HowItWorksPage />} />
+          <Route path="/features" element={<FeaturesPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
