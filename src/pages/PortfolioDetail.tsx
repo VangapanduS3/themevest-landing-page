@@ -10,16 +10,7 @@ import { cn } from "@/lib/utils";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { portfolioThemes } from "@/data/portfolioData";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip as RechartsTooltip,
-  ResponsiveContainer,
-  Legend,
-} from "recharts";
+import PerformanceChart from "@/components/PerformanceChart";
 
 const generatePerformanceData = (seed: number, volatility: number) => {
   const timeframes = {
@@ -122,7 +113,6 @@ const marketIndicatorDefinitions = {
 const PortfolioDetail = () => {
   const { id } = useParams<{ id: string }>();
   const [portfolio, setPortfolio] = useState<any>(null);
-  const [timeframe, setTimeframe] = useState("YTD");
   const [performanceData, setPerformanceData] = useState<any>(null);
   const [marketIndicators, setMarketIndicators] = useState<any>(null);
   const [stockHoldings, setStockHoldings] = useState<any[]>([]);
@@ -245,78 +235,11 @@ const PortfolioDetail = () => {
             <div className="lg:col-span-2">
               <Card className="mb-8">
                 <CardContent className="pt-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-xl font-semibold">Performance</h3>
-                    
-                    <Tabs value={timeframe} onValueChange={setTimeframe} className="w-auto">
-                      <TabsList>
-                        <TabsTrigger value="1M">1M</TabsTrigger>
-                        <TabsTrigger value="3M">3M</TabsTrigger>
-                        <TabsTrigger value="YTD">YTD</TabsTrigger>
-                        <TabsTrigger value="1Y">1Y</TabsTrigger>
-                      </TabsList>
-                    </Tabs>
-                  </div>
-                  
-                  {performanceData && (
-                    <div className="h-80">
-                      <ResponsiveContainer width="95%" height="100%">
-                        <LineChart 
-                          data={performanceData[timeframe]} 
-                          margin={{ top: 5, right: 5, left: 5, bottom: 25 }}
-                        >
-                          <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                          <XAxis 
-                            dataKey="date" 
-                            tickFormatter={(tick) => {
-                              const date = new Date(tick);
-                              return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-                            }}
-                            tick={{ fontSize: 12 }}
-                            tickCount={5}
-                            height={30}
-                            padding={{ left: 10, right: 10 }}
-                          />
-                          <YAxis 
-                            tickFormatter={(tick) => `${tick}`} 
-                            domain={['dataMin - 5', 'dataMax + 5']}
-                            tick={{ fontSize: 12 }}
-                            width={45}
-                          />
-                          <RechartsTooltip 
-                            formatter={(value: any) => [`${value}`, 'Value']}
-                            labelFormatter={(label) => {
-                              const date = new Date(label);
-                              return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-                            }}
-                            contentStyle={{ padding: '10px', borderRadius: '4px' }}
-                          />
-                          <Legend wrapperStyle={{ paddingTop: 10 }} />
-                          <Line 
-                            type="monotone" 
-                            dataKey="value" 
-                            name={`${portfolio.title} Portfolio`}
-                            stroke={
-                              portfolio.type === "tech" ? "#3b82f6" :
-                              portfolio.type === "sustainability" ? "#10b981" :
-                              portfolio.type === "healthcare" ? "#0ea5e9" :
-                              portfolio.type === "finance" ? "#f59e0b" :
-                              portfolio.type === "luxury" ? "#db2777" :
-                              portfolio.type === "energy" ? "#22c55e" :
-                              portfolio.type === "consumer" ? "#f97316" :
-                              portfolio.type === "real-estate" ? "#6366f1" :
-                              portfolio.type === "materials" ? "#f59e0b" :
-                              portfolio.type === "industrial" ? "#64748b" :
-                              portfolio.type === "telecom" ? "#06b6d4" : "#3b82f6"
-                            } 
-                            strokeWidth={2} 
-                            dot={false}
-                            activeDot={{ r: 6 }}
-                          />
-                        </LineChart>
-                      </ResponsiveContainer>
-                    </div>
-                  )}
+                  <PerformanceChart 
+                    performanceData={performanceData} 
+                    portfolioType={portfolio.type}
+                    portfolioTitle={portfolio.title}
+                  />
                 </CardContent>
               </Card>
               
