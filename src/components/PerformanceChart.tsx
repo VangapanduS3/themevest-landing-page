@@ -111,7 +111,7 @@ const PerformanceChart = ({ performanceData, portfolioType, portfolioTitle }: Pe
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart 
               data={performanceData[timeframe]} 
-              margin={{ top: 5, right: 5, left: 5, bottom: 25 }}
+              margin={{ top: 10, right: 30, left: 0, bottom: 35 }}
             >
               <defs>
                 <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
@@ -127,8 +127,9 @@ const PerformanceChart = ({ performanceData, portfolioType, portfolioTitle }: Pe
                 axisLine={{ stroke: "#e2e8f0" }}
                 tickLine={{ stroke: "#e2e8f0" }}
                 tickCount={5}
-                height={30}
-                padding={{ left: 10, right: 10 }}
+                dy={10}
+                height={35}
+                padding={{ left: 20, right: 20 }}
               />
               <YAxis 
                 tickFormatter={(tick) => `$${tick}`} 
@@ -136,7 +137,8 @@ const PerformanceChart = ({ performanceData, portfolioType, portfolioTitle }: Pe
                 tick={{ fontSize: 12, fill: "#64748b" }}
                 axisLine={{ stroke: "#e2e8f0" }}
                 tickLine={{ stroke: "#e2e8f0" }}
-                width={45}
+                width={60}
+                dx={-10}
               />
               <RechartsTooltip content={<CustomTooltip />} />
               <Area
@@ -148,6 +150,8 @@ const PerformanceChart = ({ performanceData, portfolioType, portfolioTitle }: Pe
                 fill={`url(#${gradientId})`}
                 animationDuration={1500}
                 animationEasing="ease-in-out"
+                activeDot={{ r: 6, stroke: primaryColor, strokeWidth: 2, fill: "white" }}
+                isAnimationActive={true}
               />
             </AreaChart>
           </ResponsiveContainer>
