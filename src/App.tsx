@@ -10,6 +10,8 @@ import Dashboard from "./pages/Dashboard";
 import PortfolioDetail from "./pages/PortfolioDetail";
 import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
+import TestimonialsPage from "./pages/TestimonialsPage";
+import HowItWorksPage from "./pages/HowItWorksPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -32,6 +34,8 @@ const App = () => (
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/portfolio/:id" element={<PortfolioDetail />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/testimonials" element={<TestimonialsPage />} />
+          <Route path="/how-it-works" element={<HowItWorksPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -29,8 +30,8 @@ const Navbar = () => {
   const navLinks = [
     { name: "Discover", href: "/discover" },
     { name: "Features", href: "/#features" },
-    { name: "Testimonials", href: "/#testimonials" },
-    { name: "How It Works", href: "/#how-it-works" },
+    { name: "Testimonials", href: "/testimonials" },
+    { name: "How It Works", href: "/how-it-works" },
   ];
 
   const handleLogin = () => {
