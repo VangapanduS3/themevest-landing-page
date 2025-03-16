@@ -44,6 +44,7 @@ const PerformanceChart = ({ performanceData, portfolioType, portfolioTitle }: Pe
 
   const primaryColor = getChartColor();
   const gradientId = `performance-gradient-${portfolioType}`;
+  const backgroundGradientId = `area-background-${portfolioType}`;
 
   // Format date for tooltip
   const formatDate = (dateString: string) => {
@@ -111,34 +112,39 @@ const PerformanceChart = ({ performanceData, portfolioType, portfolioTitle }: Pe
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart 
               data={performanceData[timeframe]} 
-              margin={{ top: 10, right: 30, left: 0, bottom: 35 }}
+              margin={{ top: 20, right: 30, left: 0, bottom: 40 }}
             >
               <defs>
                 <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
                   <stop offset="0%" stopColor={primaryColor} stopOpacity={0.6} />
                   <stop offset="95%" stopColor={primaryColor} stopOpacity={0.1} />
                 </linearGradient>
+                <linearGradient id={backgroundGradientId} x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#EBF2FF" stopOpacity={0.8} />
+                  <stop offset="100%" stopColor="#EBF2FF" stopOpacity={0.2} />
+                </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" vertical={false} />
+              <CartesianGrid vertical={false} horizontal={true} strokeDasharray="3 3" stroke="#e2e8f0" />
               <XAxis 
                 dataKey="date" 
                 tickFormatter={formatAxisDate}
-                tick={{ fontSize: 12, fill: "#64748b" }}
+                tick={{ fontSize: 11, fill: "#64748b" }}
                 axisLine={{ stroke: "#e2e8f0" }}
-                tickLine={{ stroke: "#e2e8f0" }}
-                tickCount={5}
+                tickLine={false}
+                tickCount={7}
                 dy={10}
-                height={35}
-                padding={{ left: 20, right: 20 }}
+                height={40}
+                padding={{ left: 30, right: 30 }}
               />
               <YAxis 
                 tickFormatter={(tick) => `$${tick}`} 
                 domain={['dataMin - 5', 'dataMax + 5']}
-                tick={{ fontSize: 12, fill: "#64748b" }}
-                axisLine={{ stroke: "#e2e8f0" }}
-                tickLine={{ stroke: "#e2e8f0" }}
-                width={60}
-                dx={-10}
+                tick={{ fontSize: 11, fill: "#64748b" }}
+                axisLine={false}
+                tickLine={false}
+                width={65}
+                dx={-5}
+                orientation="left"
               />
               <RechartsTooltip content={<CustomTooltip />} />
               <Area
@@ -147,11 +153,12 @@ const PerformanceChart = ({ performanceData, portfolioType, portfolioTitle }: Pe
                 name={`${portfolioTitle} Portfolio`}
                 stroke={primaryColor}
                 strokeWidth={2}
-                fill={`url(#${gradientId})`}
+                fill={`url(#${backgroundGradientId})`}
                 animationDuration={1500}
                 animationEasing="ease-in-out"
                 activeDot={{ r: 6, stroke: primaryColor, strokeWidth: 2, fill: "white" }}
                 isAnimationActive={true}
+                dot={false}
               />
             </AreaChart>
           </ResponsiveContainer>
