@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -76,6 +75,25 @@ const PerformanceChart = ({ performanceData, portfolioType, portfolioTitle }: Pe
     return null;
   };
 
+  // Calculate min and max values for domain with proper padding
+  const calculateDomain = (data: any[]) => {
+    if (!data || data.length === 0) return [90, 110]; // Default fallback
+    
+    const values = data.map(item => item.value);
+    const min = Math.min(...values);
+    const max = Math.max(...values);
+    
+    // Calculate padding (about 10% of the range)
+    const range = max - min;
+    const padding = range * 0.1;
+    
+    return [Math.floor(min - padding), Math.ceil(max + padding)];
+  };
+
+  // Get current domain based on selected timeframe
+  const currentDomain = performanceData && performanceData[timeframe] ? 
+    calculateDomain(performanceData[timeframe]) : [90, 110];
+
   return (
     <div className="w-full">
       <div className="flex items-center justify-between mb-6">
@@ -112,7 +130,7 @@ const PerformanceChart = ({ performanceData, portfolioType, portfolioTitle }: Pe
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart 
               data={performanceData[timeframe]} 
-              margin={{ top: 20, right: 30, left: 0, bottom: 40 }}
+              margin={{ top: 20, right: 30, left: 5, bottom: 40 }}
             >
               <defs>
                 <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
@@ -137,8 +155,8 @@ const PerformanceChart = ({ performanceData, portfolioType, portfolioTitle }: Pe
                 padding={{ left: 30, right: 30 }}
               />
               <YAxis 
-                tickFormatter={(tick) => `$${tick}`} 
-                domain={['dataMin - 5', 'dataMax + 5']}
+                tickFormatter={(tick) => `$${tick}`}
+                domain={currentDomain}
                 tick={{ fontSize: 11, fill: "#64748b" }}
                 axisLine={false}
                 tickLine={false}
