@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -27,7 +26,6 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Define navLinks based on login status
   const getNavLinks = () => {
     const links = [
       { name: "Discover", href: "/discover" },
@@ -36,7 +34,6 @@ const Navbar = () => {
       { name: "How It Works", href: "/how-it-works" },
     ];
     
-    // If logged in, add Dashboard as the first item
     if (isLoggedIn) {
       return [{ name: "Dashboard", href: "/dashboard" }, ...links];
     }
@@ -78,7 +75,6 @@ const Navbar = () => {
           <span className="font-bold text-xl">ThemeVest</span>
         </Link>
         
-        {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-8">
           {navLinks.map((link) => (
             <Link
@@ -106,12 +102,13 @@ const Navbar = () => {
               <Button variant="outline" className="rounded-full" onClick={handleLogin}>
                 Log in
               </Button>
-              <Button className="rounded-full">Get Started</Button>
+              <Button className="rounded-full" onClick={() => navigate("/signup")}>
+                Get Started
+              </Button>
             </>
           )}
         </div>
         
-        {/* Mobile menu button */}
         <button
           className="md:hidden p-2"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -124,7 +121,6 @@ const Navbar = () => {
         </button>
       </div>
       
-      {/* Mobile menu */}
       {mobileMenuOpen && (
         <div className="md:hidden absolute top-full left-0 right-0 bg-white border-b border-gray-200 shadow-lg animate-fade-in">
           <div className="container py-4 space-y-4">
@@ -153,7 +149,9 @@ const Navbar = () => {
                   <Button variant="outline" className="w-full rounded-full" onClick={handleLogin}>
                     Log in
                   </Button>
-                  <Button className="w-full rounded-full">Get Started</Button>
+                  <Button className="w-full rounded-full" onClick={() => navigate("/signup")}>
+                    Get Started
+                  </Button>
                 </>
               )}
             </div>

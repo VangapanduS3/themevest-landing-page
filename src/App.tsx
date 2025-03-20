@@ -9,6 +9,7 @@ import Discover from "./pages/Discover";
 import Dashboard from "./pages/Dashboard";
 import PortfolioDetail from "./pages/PortfolioDetail";
 import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 import NotFound from "./pages/NotFound";
 import TestimonialsPage from "./pages/TestimonialsPage";
 import HowItWorksPage from "./pages/HowItWorksPage";
@@ -35,6 +36,7 @@ const App = () => (
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/portfolio/:id" element={<PortfolioDetail />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
           <Route path="/testimonials" element={<TestimonialsPage />} />
           <Route path="/how-it-works" element={<HowItWorksPage />} />
           <Route path="/features" element={<FeaturesPage />} />
