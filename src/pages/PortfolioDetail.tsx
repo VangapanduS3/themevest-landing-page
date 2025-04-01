@@ -11,6 +11,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { portfolioThemes } from "@/data/portfolioData";
 import PerformanceChart from "@/components/PerformanceChart";
+import InvestmentDialog from "@/components/InvestmentDialog";
 
 const generatePerformanceData = (seed: number, volatility: number) => {
   const timeframes = {
@@ -116,6 +117,7 @@ const PortfolioDetail = () => {
   const [performanceData, setPerformanceData] = useState<any>(null);
   const [marketIndicators, setMarketIndicators] = useState<any>(null);
   const [stockHoldings, setStockHoldings] = useState<any[]>([]);
+  const [investmentDialogOpen, setInvestmentDialogOpen] = useState(false);
   
   useEffect(() => {
     if (id) {
@@ -135,6 +137,10 @@ const PortfolioDetail = () => {
       }
     }
   }, [id]);
+
+  const handleInvestClick = () => {
+    setInvestmentDialogOpen(true);
+  };
   
   if (!portfolio) {
     return (
@@ -224,7 +230,7 @@ const PortfolioDetail = () => {
                   <span className="text-xs ml-1">YTD</span>
                 </div>
                 
-                <Button variant="outline">
+                <Button variant="outline" onClick={handleInvestClick}>
                   Invest Now
                 </Button>
               </div>
@@ -418,7 +424,7 @@ const PortfolioDetail = () => {
                   </div>
                   
                   <div className="mt-6">
-                    <Button className="w-full">Invest Now</Button>
+                    <Button className="w-full" onClick={handleInvestClick}>Invest Now</Button>
                   </div>
                 </CardContent>
               </Card>
@@ -426,6 +432,15 @@ const PortfolioDetail = () => {
           </div>
         </div>
       </main>
+      
+      {investmentDialogOpen && (
+        <InvestmentDialog
+          isOpen={investmentDialogOpen}
+          onClose={() => setInvestmentDialogOpen(false)}
+          stocks={stockHoldings}
+          portfolioTitle={portfolio.title}
+        />
+      )}
       
       <Footer />
     </div>
