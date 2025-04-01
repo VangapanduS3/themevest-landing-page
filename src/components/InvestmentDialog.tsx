@@ -69,7 +69,8 @@ const InvestmentDialog = ({ isOpen, onClose, stocks, portfolioTitle }: Investmen
   };
 
   const handleInvestmentChange = (value: number) => {
-    if (value >= 100) {
+    // Allow any non-negative value, including zero
+    if (value >= 0) {
       setInvestment(value);
       updateStockValues(adjustedStocks, value);
     }
@@ -109,7 +110,7 @@ const InvestmentDialog = ({ isOpen, onClose, stocks, portfolioTitle }: Investmen
                 value={investment}
                 onChange={(e) => handleInvestmentChange(Number(e.target.value))}
                 className="w-32"
-                min={100}
+                min={0}
                 step={100}
               />
               <span className="text-sm text-muted-foreground">USD</span>
