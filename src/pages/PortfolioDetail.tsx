@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, TrendingUp, TrendingDown, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -12,6 +12,7 @@ import Footer from "@/components/Footer";
 import { portfolioThemes } from "@/data/portfolioData";
 import PerformanceChart from "@/components/PerformanceChart";
 import InvestmentDialog from "@/components/InvestmentDialog";
+import LoginPromptDialog from "@/components/LoginPromptDialog";
 
 const generatePerformanceData = (seed: number, volatility: number) => {
   const timeframes = {
@@ -118,8 +119,13 @@ const PortfolioDetail = () => {
   const [marketIndicators, setMarketIndicators] = useState<any>(null);
   const [stockHoldings, setStockHoldings] = useState<any[]>([]);
   const [investmentDialogOpen, setInvestmentDialogOpen] = useState(false);
+  const [loginPromptOpen, setLoginPromptOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const navigate = useNavigate();
   
   useEffect(() => {
+    setIsLoggedIn(!!localStorage.getItem("isLoggedIn"));
+    
     if (id) {
       const decodedId = decodeURIComponent(id);
       const foundPortfolio = portfolioThemes.find(p => p.title === decodedId);
@@ -139,7 +145,11 @@ const PortfolioDetail = () => {
   }, [id]);
 
   const handleInvestClick = () => {
-    setInvestmentDialogOpen(true);
+    if (isLoggedIn) {
+      setInvestmentDialogOpen(true);
+    } else {
+      setLoginPromptOpen(true);
+    }
   };
   
   if (!portfolio) {
@@ -441,6 +451,11 @@ const PortfolioDetail = () => {
           portfolioTitle={portfolio.title}
         />
       )}
+      
+      <LoginPromptDialog
+        isOpen={loginPromptOpen}
+        onClose={() => setLoginPromptOpen(false)}
+      />
       
       <Footer />
     </div>
