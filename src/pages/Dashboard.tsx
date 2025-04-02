@@ -1,5 +1,5 @@
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { 
   User, 
@@ -15,21 +15,37 @@ import {
   Clock,
   ChevronRight,
   Activity,
-  RefreshCw
+  RefreshCw,
+  LogOut,
+  UserCog,
+  Wallet,
+  HelpCircle,
+  Moon,
+  Bell as BellIcon
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "react-router-dom";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { fetchUserData, fetchPortfolioData } from "@/services/api";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/components/ui/use-toast";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const [hasUnreadNotifications, setHasUnreadNotifications] = useState(true);
 
   // Check if user is "logged in"
   useEffect(() => {
@@ -74,6 +90,19 @@ const Dashboard = () => {
     }
   }, [userDataError, toast]);
   
+  const handleLogout = () => {
+    localStorage.removeItem("isLoggedIn");
+    toast({
+      title: "Logged out",
+      description: "You have been successfully logged out."
+    });
+    navigate("/login");
+  };
+
+  const handleNotificationClick = () => {
+    setHasUnreadNotifications(false);
+  };
+
   // Show loading state for the whole dashboard
   if (isUserDataLoading) {
     return (
@@ -117,13 +146,117 @@ const Dashboard = () => {
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <Button variant="ghost" size="icon" className="relative">
-                <Bell className="h-5 w-5" />
-                <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-red-500"></span>
-              </Button>
-              <Button variant="ghost" size="icon">
-                <Settings className="h-5 w-5" />
-              </Button>
+              <DropdownMenu open={notificationsOpen} onOpenChange={setNotificationsOpen}>
+                <DropdownMenuTrigger asChild>
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="relative"
+                    onClick={handleNotificationClick}
+                  >
+                    <Bell className="h-5 w-5" />
+                    {hasUnreadNotifications && (
+                      <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-red-500"></span>
+                    )}
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-80">
+                  <DropdownMenuLabel className="font-normal">
+                    <div className="flex flex-col space-y-1">
+                      <p className="text-sm font-medium leading-none">Notifications</p>
+                      <p className="text-xs leading-none text-muted-foreground">
+                        Your recent notifications
+                      </p>
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <div className="max-h-80 overflow-y-auto">
+                    {[
+                      {
+                        icon: <Wallet className="h-4 w-4 text-green-600" />,
+                        title: "Dividend Received",
+                        description: "You received a dividend payment of $45.30",
+                        time: "2 hours ago"
+                      },
+                      {
+                        icon: <TrendingUp className="h-4 w-4 text-blue-600" />,
+                        title: "Portfolio Up 3.2%",
+                        description: "Your tech portfolio is up 3.2% today",
+                        time: "5 hours ago"
+                      },
+                      {
+                        icon: <Activity className="h-4 w-4 text-amber-600" />,
+                        title: "Portfolio Rebalanced",
+                        description: "Your portfolio has been automatically rebalanced",
+                        time: "Yesterday"
+                      }
+                    ].map((notification, i) => (
+                      <DropdownMenuItem 
+                        key={i} 
+                        className="flex cursor-pointer items-start gap-3 px-4 py-3"
+                      >
+                        <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
+                          {notification.icon}
+                        </div>
+                        <div className="flex-1">
+                          <p className="font-medium">{notification.title}</p>
+                          <p className="text-xs text-muted-foreground">
+                            {notification.description}
+                          </p>
+                          <p className="mt-1 text-xs text-muted-foreground">
+                            {notification.time}
+                          </p>
+                        </div>
+                      </DropdownMenuItem>
+                    ))}
+                  </div>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem 
+                    className="justify-center text-center cursor-pointer font-medium text-primary" 
+                    asChild
+                  >
+                    <Link to="/notifications">
+                      View all notifications
+                    </Link>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon">
+                    <Settings className="h-5 w-5" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuLabel>Settings</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem className="cursor-pointer flex items-center gap-2">
+                    <UserCog className="h-4 w-4" />
+                    <span>Account Settings</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="cursor-pointer flex items-center gap-2">
+                    <Wallet className="h-4 w-4" />
+                    <span>Payment Methods</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="cursor-pointer flex items-center gap-2">
+                    <Moon className="h-4 w-4" />
+                    <span>Appearance</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="cursor-pointer flex items-center gap-2">
+                    <HelpCircle className="h-4 w-4" />
+                    <span>Help & Support</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem 
+                    className="cursor-pointer text-red-600 flex items-center gap-2"
+                    onClick={handleLogout}
+                  >
+                    <LogOut className="h-4 w-4" />
+                    <span>Log out</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
         </div>
