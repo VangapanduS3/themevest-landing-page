@@ -26,24 +26,36 @@ const InvestmentDialog = ({ isOpen, onClose, stocks, portfolioTitle }: Investmen
   const [adjustedStocks, setAdjustedStocks] = useState<Array<{ name: string; weight: number; value: number }>>([]);
 
   useEffect(() => {
-    // Convert string weights to numbers and calculate initial values
+    // Convert string weights to numbers and normalize to ensure total is 100%
     if (stocks.length) {
-      const parsed = stocks.map(stock => ({
+      // Parse the initial weights
+      const initialParsed = stocks.map(stock => ({
         name: stock.name,
-        // Ensure weight is always positive by taking absolute value
         weight: Math.abs(parseFloat(stock.weight.replace("%", ""))),
         value: 0
       }));
       
-      updateStockValues(parsed, investment);
+      // Normalize weights to ensure they sum to 100%
+      const totalInitialWeight = initialParsed.reduce((sum, stock) => sum + stock.weight, 0);
+      const normalizedStocks = initialParsed.map(stock => ({
+        ...stock,
+        weight: totalInitialWeight > 0 ? Math.max((stock.weight / totalInitialWeight) * 100, 1) : (100 / initialParsed.length)
+      }));
+      
+      // Make final adjustments to ensure total is exactly 100%
+      const normalizedTotal = normalizedStocks.reduce((sum, stock) => sum + stock.weight, 0);
+      if (normalizedTotal !== 100 && normalizedStocks.length > 0) {
+        const diff = 100 - normalizedTotal;
+        normalizedStocks[0].weight += diff;
+      }
+      
+      updateStockValues(normalizedStocks, investment);
     }
   }, [stocks, investment]);
 
-  const updateStockValues = (stocksArray: any[], totalInvestment: number) => {
+  const updateStockValues = (stocksArray: Array<{ name: string; weight: number; value: number }>, totalInvestment: number) => {
     const updated = stocksArray.map(stock => ({
       ...stock,
-      // Ensure weight is at least 1%
-      weight: Math.max(stock.weight, 1),
       value: (stock.weight / 100) * totalInvestment
     }));
     
@@ -52,21 +64,61 @@ const InvestmentDialog = ({ isOpen, onClose, stocks, portfolioTitle }: Investmen
 
   const handleWeightChange = (index: number, newWeight: number) => {
     // Don't allow weights below 1%
-    if (newWeight < 1) newWeight = 1;
-    
-    const totalOtherWeights = adjustedStocks.reduce((sum, stock, i) => 
-      i !== index ? sum + stock.weight : sum, 0);
-    
-    // Don't allow total weight to exceed 100%
-    if (totalOtherWeights + newWeight > 100) {
-      newWeight = 100 - totalOtherWeights;
-    }
+    newWeight = Math.max(newWeight, 1);
     
     const updated = [...adjustedStocks];
-    updated[index] = {
-      ...updated[index],
-      weight: newWeight,
-    };
+    const oldWeight = updated[index].weight;
+    const weightDiff = newWeight - oldWeight;
+    
+    // If increasing weight, decrease others proportionally
+    if (weightDiff > 0) {
+      // Calculate total weight of other stocks
+      const otherStocksWeight = updated.reduce((sum, stock, i) => 
+        i !== index ? sum + stock.weight : sum, 0);
+      
+      // Check if we can increase (need at least 1% for each other stock)
+      if (otherStocksWeight - weightDiff < updated.length - 1) {
+        return; // Can't adjust, would make other stocks too small
+      }
+      
+      // Distribute the weight reduction across other stocks proportionally
+      const reductionFactor = (otherStocksWeight - weightDiff) / otherStocksWeight;
+      
+      updated.forEach((stock, i) => {
+        if (i !== index) {
+          // Reduce weight but ensure it's at least 1%
+          stock.weight = Math.max(stock.weight * reductionFactor, 1);
+        }
+      });
+    } 
+    // If decreasing weight, increase others proportionally
+    else if (weightDiff < 0) {
+      const increaseFactor = -weightDiff / (100 - oldWeight);
+      
+      updated.forEach((stock, i) => {
+        if (i !== index) {
+          stock.weight += stock.weight * increaseFactor;
+        }
+      });
+    }
+    
+    updated[index].weight = newWeight;
+    
+    // Make final adjustments to ensure total is exactly 100%
+    const finalTotal = updated.reduce((sum, stock) => sum + stock.weight, 0);
+    if (Math.abs(finalTotal - 100) > 0.1) {
+      // Find the stock with highest weight that isn't the one being changed
+      const adjustIndex = updated.findIndex((stock, i) => 
+        i !== index && stock.weight === Math.max(...updated.filter((s, idx) => idx !== index).map(s => s.weight))
+      );
+      
+      if (adjustIndex >= 0) {
+        updated[adjustIndex].weight += (100 - finalTotal);
+      } else if (updated.length > 0) {
+        // If all stocks have the same weight, adjust the first one
+        updated[0].weight += (100 - finalTotal);
+      }
+    }
     
     updateStockValues(updated, investment);
   };
@@ -152,7 +204,7 @@ const InvestmentDialog = ({ isOpen, onClose, stocks, portfolioTitle }: Investmen
                         size="icon" 
                         className="h-6 w-6"
                         onClick={() => handleIncrementWeight(index)}
-                        disabled={totalWeight >= 100 && stock.weight >= 1}
+                        disabled={stock.weight >= 99}
                       >
                         <Plus className="h-3 w-3" />
                       </Button>
@@ -166,7 +218,7 @@ const InvestmentDialog = ({ isOpen, onClose, stocks, portfolioTitle }: Investmen
                   <Slider
                     value={[stock.weight]}
                     min={1}
-                    max={100}
+                    max={99}
                     step={1}
                     onValueChange={(values) => handleWeightChange(index, values[0])}
                   />
@@ -178,7 +230,7 @@ const InvestmentDialog = ({ isOpen, onClose, stocks, portfolioTitle }: Investmen
           <div className="flex justify-between mt-4 pt-2 border-t">
             <span className="font-medium">Total</span>
             <div className="flex items-center gap-6">
-              <span className="w-20 text-right">{totalWeight}%</span>
+              <span className="w-20 text-right">{totalWeight.toFixed(0)}%</span>
               <span className="w-20 text-right font-medium">${investment.toFixed(2)}</span>
             </div>
           </div>
