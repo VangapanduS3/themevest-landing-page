@@ -98,7 +98,7 @@ const generateStockHoldings = (count: number, type: string) => {
   
   return selected.map((stock, index) => ({
     name: stock,
-    weight: weights[index] + "%",
+    weight: Math.max(weights[index], 1) + "%",
     performance: "+" + (Math.random() * 30 + 5).toFixed(1) + "%"
   }));
 };

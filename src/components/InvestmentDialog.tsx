@@ -28,10 +28,11 @@ const InvestmentDialog = ({ isOpen, onClose, stocks, portfolioTitle }: Investmen
   useEffect(() => {
     // Convert string weights to numbers and normalize to ensure total is 100%
     if (stocks.length) {
-      // Parse the initial weights
+      // Parse the initial weights - ensure they are positive
       const initialParsed = stocks.map(stock => ({
         name: stock.name,
-        weight: Math.abs(parseFloat(stock.weight.replace("%", ""))),
+        // Ensure weight is positive by taking absolute value
+        weight: Math.max(Math.abs(parseFloat(stock.weight.replace("%", ""))), 1),
         value: 0
       }));
       
