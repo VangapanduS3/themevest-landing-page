@@ -30,7 +30,8 @@ const InvestmentDialog = ({ isOpen, onClose, stocks, portfolioTitle }: Investmen
     if (stocks.length) {
       const parsed = stocks.map(stock => ({
         name: stock.name,
-        weight: parseFloat(stock.weight.replace("%", "")),
+        // Ensure weight is always positive by taking absolute value
+        weight: Math.abs(parseFloat(stock.weight.replace("%", ""))),
         value: 0
       }));
       
@@ -41,6 +42,8 @@ const InvestmentDialog = ({ isOpen, onClose, stocks, portfolioTitle }: Investmen
   const updateStockValues = (stocksArray: any[], totalInvestment: number) => {
     const updated = stocksArray.map(stock => ({
       ...stock,
+      // Ensure weight is at least 1%
+      weight: Math.max(stock.weight, 1),
       value: (stock.weight / 100) * totalInvestment
     }));
     
