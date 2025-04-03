@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -62,6 +61,11 @@ const Navbar = () => {
     navigate("/");
   };
 
+  const handleNavigateToSettings = () => {
+    navigate("/settings");
+    setMobileMenuOpen(false);
+  };
+
   const getAdjustedPath = (href: string) => {
     if (href.startsWith("/#") && location.pathname !== "/") {
       return href.replace("/#", "/");
@@ -73,7 +77,7 @@ const Navbar = () => {
     <header
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out py-4 border-b border-transparent",
-        isScrolled && "bg-white/80 backdrop-blur-md border-gray-200/30 shadow-sm"
+        isScrolled && "bg-white/80 backdrop-blur-md border-gray-200/30 shadow-sm dark:bg-gray-900/80 dark:border-gray-800/30"
       )}
     >
       <div className="container flex items-center justify-between">
@@ -171,7 +175,7 @@ const Navbar = () => {
       </div>
       
       {mobileMenuOpen && (
-        <div className="md:hidden absolute top-full left-0 right-0 bg-white border-b border-gray-200 shadow-lg animate-fade-in">
+        <div className="md:hidden absolute top-full left-0 right-0 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 shadow-lg animate-fade-in">
           <div className="container py-4 space-y-4">
             {navLinks.map((link) => (
               <Link
@@ -191,10 +195,7 @@ const Navbar = () => {
             <div className="pt-4 flex flex-col space-y-3">
               {isLoggedIn ? (
                 <>
-                  <Button variant="outline" className="w-full text-left justify-start" onClick={() => {
-                    navigate("/settings");
-                    setMobileMenuOpen(false);
-                  }}>
+                  <Button variant="outline" className="w-full text-left justify-start" onClick={handleNavigateToSettings}>
                     <Settings className="mr-2 h-4 w-4" />
                     Account Settings
                   </Button>
