@@ -1,8 +1,17 @@
+
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Bell, Settings, User, LogOut } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -94,9 +103,49 @@ const Navbar = () => {
         
         <div className="hidden md:flex items-center space-x-4">
           {isLoggedIn ? (
-            <Button variant="outline" className="rounded-full" onClick={handleLogout}>
-              Log out
-            </Button>
+            <div className="flex items-center space-x-4">
+              {/* Notifications dropdown */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon" className="rounded-full">
+                    <Bell className="h-5 w-5" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-72">
+                  <DropdownMenuLabel>Notifications</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <div className="max-h-[300px] overflow-y-auto">
+                    <div className="p-4 text-center text-muted-foreground">
+                      No new notifications
+                    </div>
+                  </div>
+                </DropdownMenuContent>
+              </DropdownMenu>
+              
+              {/* Settings dropdown */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon" className="rounded-full">
+                    <User className="h-5 w-5" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem onClick={() => navigate("/settings")}>
+                    <Settings className="mr-2 h-4 w-4" />
+                    <span>Account Settings</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleLogout}>
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Log out</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+              
+              <Button variant="outline" className="rounded-full" onClick={handleLogout}>
+                Log out
+              </Button>
+            </div>
           ) : (
             <>
               <Button variant="outline" className="rounded-full" onClick={handleLogin}>
@@ -141,9 +190,18 @@ const Navbar = () => {
             ))}
             <div className="pt-4 flex flex-col space-y-3">
               {isLoggedIn ? (
-                <Button variant="outline" className="w-full rounded-full" onClick={handleLogout}>
-                  Log out
-                </Button>
+                <>
+                  <Button variant="outline" className="w-full text-left justify-start" onClick={() => {
+                    navigate("/settings");
+                    setMobileMenuOpen(false);
+                  }}>
+                    <Settings className="mr-2 h-4 w-4" />
+                    Account Settings
+                  </Button>
+                  <Button variant="outline" className="w-full rounded-full" onClick={handleLogout}>
+                    Log out
+                  </Button>
+                </>
               ) : (
                 <>
                   <Button variant="outline" className="w-full rounded-full" onClick={handleLogin}>
