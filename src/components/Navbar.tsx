@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -62,6 +63,7 @@ const Navbar = () => {
   };
 
   const handleNavigateToSettings = () => {
+    console.log("Navigating to settings page");
     navigate("/settings");
     setMobileMenuOpen(false);
   };
@@ -134,7 +136,7 @@ const Navbar = () => {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={() => navigate("/settings")}>
+                  <DropdownMenuItem onClick={handleNavigateToSettings}>
                     <Settings className="mr-2 h-4 w-4" />
                     <span>Account Settings</span>
                   </DropdownMenuItem>
