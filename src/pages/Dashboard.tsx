@@ -98,9 +98,9 @@ const Dashboard = () => {
     navigate("/login");
   };
 
-  const handleNavigateToSettings = () => {
-    console.log("Navigating to settings page from Dashboard");
-    navigate("/settings");
+  const handleNavigateToSettings = (tab = "profile") => {
+    console.log(`Navigating to settings page tab: ${tab} from Dashboard`);
+    navigate(`/settings?tab=${tab}`);
   };
 
   const handleNotificationClick = () => {
@@ -237,21 +237,21 @@ const Dashboard = () => {
                   <DropdownMenuSeparator />
                   <DropdownMenuItem 
                     className="cursor-pointer flex items-center gap-2"
-                    onClick={handleNavigateToSettings}
+                    onClick={() => handleNavigateToSettings("profile")}
                   >
                     <UserCog className="h-4 w-4" />
                     <span>Account Settings</span>
                   </DropdownMenuItem>
                   <DropdownMenuItem 
                     className="cursor-pointer flex items-center gap-2"
-                    onClick={handleNavigateToSettings}
+                    onClick={() => handleNavigateToSettings("payment")}
                   >
                     <Wallet className="h-4 w-4" />
                     <span>Payment Methods</span>
                   </DropdownMenuItem>
                   <DropdownMenuItem 
                     className="cursor-pointer flex items-center gap-2"
-                    onClick={handleNavigateToSettings}
+                    onClick={() => handleNavigateToSettings("appearance")}
                   >
                     <Moon className="h-4 w-4" />
                     <span>Appearance</span>
@@ -273,9 +273,8 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-      </div>
 
-      <div className="container py-8">
+        <div className="container py-8">
         <div className="grid gap-4 md:grid-cols-3 mb-8">
           {/* Investment summary cards with staggered animations */}
           <Card className="overflow-hidden hover:shadow-md transition-shadow duration-300 animate-fade-in" style={{ animationDelay: "200ms" }}>

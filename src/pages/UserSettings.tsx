@@ -1,6 +1,6 @@
 
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -15,12 +15,24 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
 const UserSettings = () => {
+  const location = useLocation();
+  const [activeTab, setActiveTab] = useState("profile");
   const [currentTheme, setCurrentTheme] = useState<"light" | "dark">(
     document.documentElement.classList.contains("dark") ? "dark" : "light"
   );
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  // Parse the tab parameter from the URL
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const tabParam = queryParams.get("tab");
+    if (tabParam && ["profile", "brokerage", "payment", "appearance"].includes(tabParam)) {
+      setActiveTab(tabParam);
+      console.log(`Setting active tab to: ${tabParam}`);
+    }
+  }, [location.search]);
 
   // Mock user data - in a real app, this would come from your auth provider
   const userData = {
@@ -107,7 +119,7 @@ const UserSettings = () => {
           <h1 className="text-3xl font-bold">Account Settings</h1>
         </div>
 
-        <Tabs defaultValue="profile" className="w-full">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid grid-cols-2 md:grid-cols-4 mb-8">
             <TabsTrigger value="profile">Profile</TabsTrigger>
             <TabsTrigger value="brokerage">Brokerage Accounts</TabsTrigger>

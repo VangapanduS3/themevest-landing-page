@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -61,9 +62,9 @@ const Navbar = () => {
     navigate("/");
   };
 
-  const handleNavigateToSettings = () => {
-    console.log("Navigating to settings page from Navbar");
-    navigate("/settings");
+  const handleNavigateToSettings = (tab = "profile") => {
+    console.log(`Navigating to settings page tab: ${tab} from Navbar`);
+    navigate(`/settings?tab=${tab}`);
     setMobileMenuOpen(false);
   };
 
@@ -133,9 +134,17 @@ const Navbar = () => {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={handleNavigateToSettings}>
+                  <DropdownMenuItem onClick={() => handleNavigateToSettings("profile")}>
                     <Settings className="mr-2 h-4 w-4" />
                     <span>Account Settings</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleNavigateToSettings("payment")}>
+                    <Settings className="mr-2 h-4 w-4" />
+                    <span>Payment Methods</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleNavigateToSettings("appearance")}>
+                    <Settings className="mr-2 h-4 w-4" />
+                    <span>Appearance</span>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleLogout}>
@@ -194,9 +203,17 @@ const Navbar = () => {
             <div className="pt-4 flex flex-col space-y-3">
               {isLoggedIn ? (
                 <>
-                  <Button variant="outline" className="w-full text-left justify-start" onClick={handleNavigateToSettings}>
+                  <Button variant="outline" className="w-full text-left justify-start" onClick={() => handleNavigateToSettings("profile")}>
                     <Settings className="mr-2 h-4 w-4" />
                     Account Settings
+                  </Button>
+                  <Button variant="outline" className="w-full text-left justify-start" onClick={() => handleNavigateToSettings("payment")}>
+                    <Settings className="mr-2 h-4 w-4" />
+                    Payment Methods
+                  </Button>
+                  <Button variant="outline" className="w-full text-left justify-start" onClick={() => handleNavigateToSettings("appearance")}>
+                    <Settings className="mr-2 h-4 w-4" />
+                    Appearance
                   </Button>
                   <Button variant="outline" className="w-full rounded-full" onClick={handleLogout}>
                     Log out
