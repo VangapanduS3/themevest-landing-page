@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -63,7 +62,7 @@ const Navbar = () => {
   };
 
   const handleNavigateToSettings = () => {
-    console.log("Navigating to settings page");
+    console.log("Navigating to settings page from Navbar");
     navigate("/settings");
     setMobileMenuOpen(false);
   };
@@ -110,7 +109,6 @@ const Navbar = () => {
         <div className="hidden md:flex items-center space-x-4">
           {isLoggedIn ? (
             <div className="flex items-center space-x-4">
-              {/* Notifications dropdown */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="icon" className="rounded-full">
@@ -128,7 +126,6 @@ const Navbar = () => {
                 </DropdownMenuContent>
               </DropdownMenu>
               
-              {/* Settings dropdown */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="icon" className="rounded-full">

@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { 
@@ -97,6 +96,11 @@ const Dashboard = () => {
       description: "You have been successfully logged out."
     });
     navigate("/login");
+  };
+
+  const handleNavigateToSettings = () => {
+    console.log("Navigating to settings page from Dashboard");
+    navigate("/settings");
   };
 
   const handleNotificationClick = () => {
@@ -231,15 +235,24 @@ const Dashboard = () => {
                 <DropdownMenuContent align="end">
                   <DropdownMenuLabel>Settings</DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem className="cursor-pointer flex items-center gap-2">
+                  <DropdownMenuItem 
+                    className="cursor-pointer flex items-center gap-2"
+                    onClick={handleNavigateToSettings}
+                  >
                     <UserCog className="h-4 w-4" />
                     <span>Account Settings</span>
                   </DropdownMenuItem>
-                  <DropdownMenuItem className="cursor-pointer flex items-center gap-2">
+                  <DropdownMenuItem 
+                    className="cursor-pointer flex items-center gap-2"
+                    onClick={handleNavigateToSettings}
+                  >
                     <Wallet className="h-4 w-4" />
                     <span>Payment Methods</span>
                   </DropdownMenuItem>
-                  <DropdownMenuItem className="cursor-pointer flex items-center gap-2">
+                  <DropdownMenuItem 
+                    className="cursor-pointer flex items-center gap-2"
+                    onClick={handleNavigateToSettings}
+                  >
                     <Moon className="h-4 w-4" />
                     <span>Appearance</span>
                   </DropdownMenuItem>
