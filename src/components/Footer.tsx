@@ -33,7 +33,7 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="bg-gray-50 pt-16 pb-8">
+    <footer className="bg-gray-50 dark:bg-gray-900 pt-16 pb-8">
       <div className="container">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
           <div>
@@ -41,9 +41,9 @@ const Footer = () => {
               <div className="w-8 h-8 bg-primary rounded-md flex items-center justify-center">
                 <span className="text-white font-bold">T</span>
               </div>
-              <span className="font-bold text-xl">ThemeVest</span>
+              <span className="font-bold text-xl dark:text-white">ThemeVest</span>
             </a>
-            <p className="text-muted-foreground text-sm mb-6">
+            <p className="text-muted-foreground dark:text-gray-300 text-sm mb-6">
               Thematic investing for a new generation. Build portfolios around ideas that matter to you.
             </p>
             <div className="flex space-x-4">
@@ -51,7 +51,7 @@ const Footer = () => {
                 <a 
                   key={index} 
                   href={social.href}
-                  className="w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary transition-colors"
+                  className="w-10 h-10 rounded-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 flex items-center justify-center text-muted-foreground dark:text-gray-300 hover:text-primary dark:hover:text-primary hover:border-primary dark:hover:border-primary transition-colors"
                 >
                   {social.icon}
                 </a>
@@ -60,13 +60,13 @@ const Footer = () => {
           </div>
           
           <div>
-            <h3 className="font-semibold mb-6">Quick Links</h3>
+            <h3 className="font-semibold mb-6 dark:text-white">Quick Links</h3>
             <ul className="space-y-3">
               {quickLinks.map((link) => (
                 <li key={link.title}>
                   <a 
                     href={link.href}
-                    className="text-muted-foreground hover:text-primary transition-colors text-sm"
+                    className="text-muted-foreground dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors text-sm"
                   >
                     {link.title}
                   </a>
@@ -76,13 +76,13 @@ const Footer = () => {
           </div>
           
           <div>
-            <h3 className="font-semibold mb-6">Legal</h3>
+            <h3 className="font-semibold mb-6 dark:text-white">Legal</h3>
             <ul className="space-y-3">
               {legalLinks.map((link) => (
                 <li key={link.title}>
                   <a 
                     href={link.href}
-                    className="text-muted-foreground hover:text-primary transition-colors text-sm"
+                    className="text-muted-foreground dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors text-sm"
                   >
                     {link.title}
                   </a>
@@ -92,10 +92,10 @@ const Footer = () => {
           </div>
           
           <div>
-            <h3 className="font-semibold mb-6">Contact Us</h3>
+            <h3 className="font-semibold mb-6 dark:text-white">Contact Us</h3>
             <ul className="space-y-3">
               {contactInfo.map((info, index) => (
-                <li key={index} className="text-muted-foreground text-sm">
+                <li key={index} className="text-muted-foreground dark:text-gray-400 text-sm">
                   {info.title}
                 </li>
               ))}
@@ -103,11 +103,11 @@ const Footer = () => {
           </div>
         </div>
         
-        <div className="border-t border-gray-200 pt-8 flex flex-col md:flex-row justify-between">
-          <p className="text-muted-foreground text-sm mb-4 md:mb-0">
+        <div className="border-t border-gray-200 dark:border-gray-800 pt-8 flex flex-col md:flex-row justify-between">
+          <p className="text-muted-foreground dark:text-gray-400 text-sm mb-4 md:mb-0">
             © {currentYear} ThemeVest. All rights reserved.
           </p>
-          <p className="text-muted-foreground text-sm">
+          <p className="text-muted-foreground dark:text-gray-400 text-sm">
             Investment advisory services offered through ThemeVest LLC, an SEC Registered Investment Advisor
           </p>
         </div>
