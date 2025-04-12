@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { 
@@ -30,7 +31,7 @@ import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { fetchUserData, fetchPortfolioData } from "@/services/api";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -39,6 +40,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { HomeTourButton } from "@/components/tour/HomeTour";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -103,6 +105,10 @@ const Dashboard = () => {
     setHasUnreadNotifications(false);
   };
 
+  const handleAddNew = () => {
+    navigate('/discover');
+  };
+
   if (isUserDataLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -131,9 +137,148 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-background pb-10">
+      {/* Header section similar to landing page */}
+      <header className="border-b border-border">
+        <div className="container mx-auto py-3 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Link to="/" className="flex items-center gap-2">
+              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+                <span className="text-white font-bold text-lg">T</span>
+              </div>
+              <span className="font-bold text-xl">ThemeVest</span>
+            </Link>
+          </div>
+          
+          <div className="flex items-center gap-4">
+            <HomeTourButton />
+            
+            <DropdownMenu open={notificationsOpen} onOpenChange={setNotificationsOpen}>
+              <DropdownMenuTrigger asChild>
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="relative"
+                  onClick={handleNotificationClick}
+                >
+                  <Bell className="h-5 w-5" />
+                  {hasUnreadNotifications && (
+                    <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-red-500"></span>
+                  )}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-80">
+                <DropdownMenuLabel className="font-normal">
+                  <div className="flex flex-col space-y-1">
+                    <p className="text-sm font-medium leading-none">Notifications</p>
+                    <p className="text-xs leading-none text-muted-foreground">
+                      Your recent notifications
+                    </p>
+                  </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <div className="max-h-80 overflow-y-auto">
+                  {[
+                    {
+                      icon: <Wallet className="h-4 w-4 text-green-600" />,
+                      title: "Dividend Received",
+                      description: "You received a dividend payment of $45.30",
+                      time: "2 hours ago"
+                    },
+                    {
+                      icon: <TrendingUp className="h-4 w-4 text-blue-600" />,
+                      title: "Portfolio Up 3.2%",
+                      description: "Your tech portfolio is up 3.2% today",
+                      time: "5 hours ago"
+                    },
+                    {
+                      icon: <Activity className="h-4 w-4 text-amber-600" />,
+                      title: "Portfolio Rebalanced",
+                      description: "Your portfolio has been automatically rebalanced",
+                      time: "Yesterday"
+                    }
+                  ].map((notification, i) => (
+                    <DropdownMenuItem 
+                      key={i} 
+                      className="flex cursor-pointer items-start gap-3 px-4 py-3"
+                    >
+                      <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
+                        {notification.icon}
+                      </div>
+                      <div className="flex-1">
+                        <p className="font-medium">{notification.title}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {notification.description}
+                        </p>
+                        <p className="mt-1 text-xs text-muted-foreground">
+                          {notification.time}
+                        </p>
+                      </div>
+                    </DropdownMenuItem>
+                  ))}
+                </div>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem 
+                  className="justify-center text-center cursor-pointer font-medium text-primary" 
+                  asChild
+                >
+                  <Link to="/notifications">
+                    View all notifications
+                  </Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  <Settings className="h-5 w-5" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuLabel>Settings</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem 
+                  className="cursor-pointer flex items-center gap-2"
+                  onClick={() => handleNavigateToSettings("profile")}
+                >
+                  <UserCog className="h-4 w-4" />
+                  <span>Account Settings</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem 
+                  className="cursor-pointer flex items-center gap-2"
+                  onClick={() => handleNavigateToSettings("payment")}
+                >
+                  <Wallet className="h-4 w-4" />
+                  <span>Payment Methods</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem 
+                  className="cursor-pointer flex items-center gap-2"
+                  onClick={() => handleNavigateToSettings("appearance")}
+                >
+                  <Moon className="h-4 w-4" />
+                  <span>Appearance</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem className="cursor-pointer flex items-center gap-2">
+                  <HelpCircle className="h-4 w-4" />
+                  <span>Help & Support</span>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem 
+                  className="cursor-pointer text-red-600 flex items-center gap-2"
+                  onClick={handleLogout}
+                >
+                  <LogOut className="h-4 w-4" />
+                  <span>Log out</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        </div>
+      </header>
+
       <div className="bg-primary/5 border-b border-border">
         <div className="container py-4">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between dashboard-welcome">
             <div className="flex items-center gap-3">
               <div className="h-12 w-12 rounded-full bg-primary flex items-center justify-center animate-fade-in">
                 <User className="h-6 w-6 text-white" />
@@ -143,133 +288,11 @@ const Dashboard = () => {
                 <p className="text-muted-foreground">Here's your investment overview</p>
               </div>
             </div>
-            <div className="flex items-center gap-2">
-              <DropdownMenu open={notificationsOpen} onOpenChange={setNotificationsOpen}>
-                <DropdownMenuTrigger asChild>
-                  <Button 
-                    variant="ghost" 
-                    size="icon" 
-                    className="relative"
-                    onClick={handleNotificationClick}
-                  >
-                    <Bell className="h-5 w-5" />
-                    {hasUnreadNotifications && (
-                      <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-red-500"></span>
-                    )}
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-80">
-                  <DropdownMenuLabel className="font-normal">
-                    <div className="flex flex-col space-y-1">
-                      <p className="text-sm font-medium leading-none">Notifications</p>
-                      <p className="text-xs leading-none text-muted-foreground">
-                        Your recent notifications
-                      </p>
-                    </div>
-                  </DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <div className="max-h-80 overflow-y-auto">
-                    {[
-                      {
-                        icon: <Wallet className="h-4 w-4 text-green-600" />,
-                        title: "Dividend Received",
-                        description: "You received a dividend payment of $45.30",
-                        time: "2 hours ago"
-                      },
-                      {
-                        icon: <TrendingUp className="h-4 w-4 text-blue-600" />,
-                        title: "Portfolio Up 3.2%",
-                        description: "Your tech portfolio is up 3.2% today",
-                        time: "5 hours ago"
-                      },
-                      {
-                        icon: <Activity className="h-4 w-4 text-amber-600" />,
-                        title: "Portfolio Rebalanced",
-                        description: "Your portfolio has been automatically rebalanced",
-                        time: "Yesterday"
-                      }
-                    ].map((notification, i) => (
-                      <DropdownMenuItem 
-                        key={i} 
-                        className="flex cursor-pointer items-start gap-3 px-4 py-3"
-                      >
-                        <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
-                          {notification.icon}
-                        </div>
-                        <div className="flex-1">
-                          <p className="font-medium">{notification.title}</p>
-                          <p className="text-xs text-muted-foreground">
-                            {notification.description}
-                          </p>
-                          <p className="mt-1 text-xs text-muted-foreground">
-                            {notification.time}
-                          </p>
-                        </div>
-                      </DropdownMenuItem>
-                    ))}
-                  </div>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem 
-                    className="justify-center text-center cursor-pointer font-medium text-primary" 
-                    asChild
-                  >
-                    <Link to="/notifications">
-                      View all notifications
-                    </Link>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon">
-                    <Settings className="h-5 w-5" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuLabel>Settings</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem 
-                    className="cursor-pointer flex items-center gap-2"
-                    onClick={() => handleNavigateToSettings("profile")}
-                  >
-                    <UserCog className="h-4 w-4" />
-                    <span>Account Settings</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem 
-                    className="cursor-pointer flex items-center gap-2"
-                    onClick={() => handleNavigateToSettings("payment")}
-                  >
-                    <Wallet className="h-4 w-4" />
-                    <span>Payment Methods</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem 
-                    className="cursor-pointer flex items-center gap-2"
-                    onClick={() => handleNavigateToSettings("appearance")}
-                  >
-                    <Moon className="h-4 w-4" />
-                    <span>Appearance</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem className="cursor-pointer flex items-center gap-2">
-                    <HelpCircle className="h-4 w-4" />
-                    <span>Help & Support</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem 
-                    className="cursor-pointer text-red-600 flex items-center gap-2"
-                    onClick={handleLogout}
-                  >
-                    <LogOut className="h-4 w-4" />
-                    <span>Log out</span>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
           </div>
         </div>
 
         <div className="container py-8">
-          <div className="grid gap-4 md:grid-cols-3 mb-8">
+          <div className="grid gap-4 md:grid-cols-3 mb-8 portfolio-overview">
             <Card className="overflow-hidden hover:shadow-md transition-shadow duration-300 animate-fade-in" style={{ animationDelay: "200ms" }}>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 bg-gradient-to-r from-primary/5 to-transparent">
                 <CardTitle className="text-sm font-medium">Total Investment</CardTitle>
@@ -314,7 +337,11 @@ const Dashboard = () => {
             <TabsContent value="portfolios" className="space-y-6">
               <div className="flex items-center justify-between mb-2">
                 <h2 className="text-xl font-semibold">Your Best Performing Portfolios</h2>
-                <Button size="sm" className="group bg-primary hover:bg-primary/90" onClick={() => navigate('/discover')}>
+                <Button 
+                  size="sm" 
+                  className="group bg-primary hover:bg-primary/90" 
+                  onClick={handleAddNew}
+                >
                   <Plus className="mr-1 h-4 w-4 transition-transform group-hover:rotate-90" />
                   Add New
                 </Button>
@@ -339,7 +366,7 @@ const Dashboard = () => {
                   userData.bestPerforming.map((portfolio, index) => (
                     <Card 
                       key={portfolio.title}
-                      className="overflow-hidden hover:shadow-md transition-all duration-300 hover:-translate-y-1 group animate-fade-in"
+                      className="overflow-hidden hover:shadow-md transition-all duration-300 hover:-translate-y-1 group animate-fade-in portfolio-card"
                       style={{ animationDelay: `${(index + 6) * 100}ms` }}
                     >
                       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 bg-gradient-to-r from-primary/5 to-transparent">

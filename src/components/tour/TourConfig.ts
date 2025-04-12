@@ -46,8 +46,20 @@ export const loginPageTourSteps: TourStep[] = [
   }
 ];
 
-// Dashboard page tour steps
+// Dashboard page tour steps - This will be our new starting point
 export const dashboardPageTourSteps: TourStep[] = [
+  {
+    target: ".dashboard-welcome", // Target the welcome section
+    title: "Welcome to Your Dashboard",
+    content: "This is where you can manage your investments and view your portfolio performance.",
+    position: "bottom"
+  },
+  {
+    target: ".portfolio-overview", // Target the portfolio overview cards
+    title: "Portfolio Overview",
+    content: "View your total investment, returns, and current portfolio value at a glance.",
+    position: "bottom"
+  },
   {
     target: "button:has(.Settings)", // Target the settings button
     title: "Account Settings",
@@ -95,7 +107,7 @@ export const settingsPageTourSteps: TourStep[] = [
 // Dashboard return tour steps
 export const dashboardReturnTourSteps: TourStep[] = [
   {
-    target: "button:has(.Plus)", // Target the Add New button
+    target: "button:contains('Add New')", // Target the Add New button
     title: "Add New Portfolio",
     content: "Click here to explore new portfolio themes and add them to your dashboard.",
     position: "bottom",

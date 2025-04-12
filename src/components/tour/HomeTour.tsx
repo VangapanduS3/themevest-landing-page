@@ -10,14 +10,17 @@ import {
 } from "@/components/ui/tooltip";
 
 export const HomeTourButton = () => {
-  const { startTour } = useTour();
+  const { startTour, startDashboardTour } = useTour();
+
+  // Determine if we're on the dashboard page
+  const isDashboard = window.location.pathname === "/dashboard";
 
   return (
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
           <Button 
-            onClick={startTour}
+            onClick={isDashboard ? startDashboardTour : startTour}
             variant="ghost" 
             size="sm"
             className="flex items-center gap-2 text-primary"

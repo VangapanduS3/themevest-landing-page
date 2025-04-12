@@ -134,6 +134,20 @@ export function useTour() {
     start();
   }, [location.pathname, navigate, setCurrentPage, setSteps, setTourActive, start]);
 
+  // New function to start tour directly from dashboard
+  const startDashboardTour = useCallback(() => {
+    setTourActive(true);
+    setCurrentPage('dashboard');
+    setSteps(dashboardPageTourSteps);
+    
+    // Make sure we're on the dashboard
+    if (location.pathname !== '/dashboard') {
+      navigate('/dashboard');
+    }
+    
+    start();
+  }, [navigate, location.pathname, setCurrentPage, setSteps, setTourActive, start]);
+
   const closeTour = useCallback(() => {
     setTourActive(false);
     close();
@@ -160,6 +174,7 @@ export function useTour() {
 
   return {
     startTour,
+    startDashboardTour,
     closeTour,
     isTourOpen: isOpen,
     isTourActive,
