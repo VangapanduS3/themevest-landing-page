@@ -23,11 +23,29 @@ export function useTour() {
     setCurrentPage,
     getCurrentPage,
     setTourActive,
-    isTourActive
+    isTourActive,
+    next
   } = useTourStore();
   
   const location = useLocation();
   const navigate = useNavigate();
+
+  // Handle step changes that require navigation
+  useEffect(() => {
+    if (!isTourActive || !isOpen) return;
+    
+    const currentPage = getCurrentPage();
+    const currentStep = useTourStore.getState().currentStep;
+    const steps = useTourStore.getState().steps;
+    
+    // Check if the current step has nextPage defined
+    if (steps[currentStep]?.nextPage) {
+      const nextPage = steps[currentStep]?.nextPage;
+      
+      // This will be handled by the component's click handler
+      // We only need to worry about auto-navigation if needed
+    }
+  }, [isTourActive, isOpen, getCurrentPage]);
 
   // Listen for route changes to update tour steps
   useEffect(() => {

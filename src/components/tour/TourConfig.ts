@@ -4,9 +4,9 @@ import { TourStep } from "./GuidedTour";
 // Landing page tour steps
 export const landingPageTourSteps: TourStep[] = [
   {
-    target: ".button-shine", // Target the "Explore Themes" button with the shine effect
+    target: "button:contains('Create Account')", // Target the "Create Account" button
     title: "Get Started",
-    content: "Click here to start exploring investment themes and create your account.",
+    content: "Click here to create your account and start investing.",
     position: "bottom",
     nextPage: "signup" // Navigate to signup page after this step
   }

@@ -1,11 +1,11 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { Lock, Mail, User } from "lucide-react";
+import { useTour } from "@/components/tour/useTour";
 
 const Signup = () => {
   const [name, setName] = useState("");
@@ -15,6 +15,7 @@ const Signup = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { isTourActive, advanceToNextPage } = useTour();
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -55,8 +56,13 @@ const Signup = () => {
         description: "Please log in with your new account.",
       });
       
-      // Navigate to login page instead of dashboard
-      navigate("/login");
+      // If tour is active, manually advance to the next page
+      if (isTourActive) {
+        advanceToNextPage("login");
+      } else {
+        // Normal navigation
+        navigate("/login");
+      }
     } else {
       toast({
         variant: "destructive",
