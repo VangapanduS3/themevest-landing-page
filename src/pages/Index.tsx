@@ -8,7 +8,6 @@ import Testimonials from "@/components/Testimonials";
 import CallToAction from "@/components/CallToAction";
 import Footer from "@/components/Footer";
 import { GuidedTour } from "@/components/tour/GuidedTour";
-import { HomeTourButton } from "@/components/tour/HomeTour";
 
 const Index = () => {
   useEffect(() => {
@@ -42,9 +41,6 @@ const Index = () => {
   return (
     <div className="min-h-screen">
       <Navbar />
-      <div className="container mt-4 flex justify-end">
-        <HomeTourButton />
-      </div>
       <main>
         <Hero />
         <PortfolioThemes />

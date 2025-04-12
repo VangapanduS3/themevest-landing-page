@@ -3,6 +3,7 @@ import { useEffect, useRef } from "react";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { HomeTourButton } from "@/components/tour/HomeTour";
 
 const Hero = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -72,6 +73,7 @@ const Hero = () => {
               How It Works
             </Link>
           </Button>
+          <HomeTourButton />
         </div>
         
         {/* Stats */}
