@@ -15,6 +15,7 @@ import TestimonialsPage from "./pages/TestimonialsPage";
 import HowItWorksPage from "./pages/HowItWorksPage";
 import FeaturesPage from "./pages/FeaturesPage";
 import UserSettings from "./pages/UserSettings";
+import { GuidedTour } from "./components/tour/GuidedTour";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -54,6 +55,7 @@ const App = () => {
             />
             <Route path="*" element={<NotFound />} />
           </Routes>
+          <GuidedTour />
         </BrowserRouter>
       </TooltipProvider>
     </QueryClientProvider>
