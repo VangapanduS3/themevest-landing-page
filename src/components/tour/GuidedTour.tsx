@@ -1,16 +1,18 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import { X, ChevronRight, ChevronLeft } from 'lucide-react';
+import { X, ChevronRight, ChevronLeft, Circle, Target, Info } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useTourStore } from '@/components/tour/useTourStore';
+import { useTour } from './useTour';
 
 export interface TourStep {
   target: string; // CSS selector for the target element
   title: string;
   content: string;
   position?: 'top' | 'right' | 'bottom' | 'left' | 'center';
+  nextPage?: string; // Optional next page to navigate to after this step
 }
 
 interface HighlightProps {
@@ -56,7 +58,7 @@ const Highlight: React.FC<HighlightProps> = ({
 
   return (
     <div
-      className="absolute rounded-full border-2 border-purple-500 bg-purple-400/20 pointer-events-none z-50 animate-pulse"
+      className="absolute rounded-full border-2 border-primary bg-primary/10 pointer-events-none z-50 animate-pulse"
       style={{
         top: `${position.top}px`,
         left: `${position.left}px`,
@@ -77,6 +79,8 @@ interface TooltipProps {
   onClose: () => void;
   currentStep: number;
   totalSteps: number;
+  isLastStepInPage: boolean;
+  nextPage?: string;
 }
 
 const Tooltip: React.FC<TooltipProps> = ({
@@ -88,13 +92,16 @@ const Tooltip: React.FC<TooltipProps> = ({
   onPrev,
   onClose,
   currentStep,
-  totalSteps
+  totalSteps,
+  isLastStepInPage,
+  nextPage
 }) => {
   const [tooltipPosition, setTooltipPosition] = useState({ 
     top: 0, 
     left: 0 
   });
   const tooltipRef = useRef<HTMLDivElement>(null);
+  const { advanceToNextPage } = useTour();
 
   useEffect(() => {
     if (!targetElement || !tooltipRef.current) return;
@@ -153,19 +160,33 @@ const Tooltip: React.FC<TooltipProps> = ({
     };
   }, [targetElement, position]);
 
-  if (!targetElement) return null;
+  const handleNextClick = () => {
+    if (currentStep < totalSteps - 1) {
+      onNext();
+    } else if (isLastStepInPage && nextPage) {
+      // If this is the last step in the page and there's a next page, go to it
+      advanceToNextPage(nextPage);
+    } else {
+      onClose();
+    }
+  };
+
+  if (!targetElement && position !== 'center') return null;
 
   return (
     <div
       ref={tooltipRef}
-      className="fixed bg-white dark:bg-card shadow-lg rounded-lg p-4 w-72 z-[9999] border border-border"
+      className="fixed bg-white dark:bg-card shadow-xl rounded-xl p-4 w-64 z-[9999] border border-primary/20"
       style={{
         top: `${tooltipPosition.top}px`,
         left: `${tooltipPosition.left}px`,
       }}
     >
       <div className="flex justify-between items-center mb-2">
-        <h3 className="font-semibold text-foreground">{title}</h3>
+        <div className="flex items-center gap-2">
+          <Target className="h-4 w-4 text-primary" />
+          <h3 className="font-semibold text-foreground">{title}</h3>
+        </div>
         <Button 
           size="icon"
           variant="ghost"
@@ -193,12 +214,18 @@ const Tooltip: React.FC<TooltipProps> = ({
           </Button>
           <Button 
             size="sm"
-            onClick={currentStep < totalSteps - 1 ? onNext : onClose}
+            onClick={handleNextClick}
+            className="group"
           >
             {currentStep < totalSteps - 1 ? (
               <>
                 Next
-                <ChevronRight className="h-4 w-4 ml-1" />
+                <ChevronRight className="h-4 w-4 ml-1 group-hover:translate-x-0.5 transition-transform" />
+              </>
+            ) : isLastStepInPage && nextPage ? (
+              <>
+                Continue
+                <ChevronRight className="h-4 w-4 ml-1 group-hover:translate-x-0.5 transition-transform" />
               </>
             ) : (
               'Finish'
@@ -218,7 +245,8 @@ export const GuidedTour: React.FC = () => {
     start, 
     next, 
     prev, 
-    close 
+    close,
+    currentPage
   } = useTourStore();
   const [targetElement, setTargetElement] = useState<Element | null>(null);
 
@@ -227,33 +255,41 @@ export const GuidedTour: React.FC = () => {
 
     const currentTarget = steps[currentStep]?.target;
     if (currentTarget) {
-      const element = document.querySelector(currentTarget);
-      if (element) {
-        setTargetElement(element);
-        
-        // Scroll element into view if needed
-        const rect = element.getBoundingClientRect();
-        const isInViewport = 
-          rect.top >= 0 &&
-          rect.left >= 0 &&
-          rect.bottom <= window.innerHeight &&
-          rect.right <= window.innerWidth;
+      // Wait a bit for the DOM to settle after navigation
+      const timeoutId = setTimeout(() => {
+        const element = document.querySelector(currentTarget);
+        if (element) {
+          setTargetElement(element);
           
-        if (!isInViewport) {
-          element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          // Scroll element into view if needed
+          const rect = element.getBoundingClientRect();
+          const isInViewport = 
+            rect.top >= 50 &&
+            rect.left >= 0 &&
+            rect.bottom <= window.innerHeight - 50 &&
+            rect.right <= window.innerWidth;
+            
+          if (!isInViewport) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        } else {
+          console.warn(`Target element not found: ${currentTarget}`);
+          setTargetElement(null);
         }
-      } else {
-        console.warn(`Target element not found: ${currentTarget}`);
-        setTargetElement(null);
-      }
+      }, 300);
+      
+      return () => clearTimeout(timeoutId);
     }
-  }, [isOpen, currentStep, steps]);
+  }, [isOpen, currentStep, steps, currentPage]);
 
   if (!isOpen || !steps.length) return null;
 
+  const isLastStepInPage = currentStep === steps.length - 1;
+  const nextPage = steps[currentStep]?.nextPage;
+
   return createPortal(
     <>
-      <div className="fixed inset-0 bg-black/50 z-40" onClick={close} />
+      <div className="fixed inset-0 bg-black/30 z-40" onClick={close} />
       <Highlight targetElement={targetElement} />
       <Tooltip
         targetElement={targetElement}
@@ -265,6 +301,8 @@ export const GuidedTour: React.FC = () => {
         onClose={close}
         currentStep={currentStep}
         totalSteps={steps.length}
+        isLastStepInPage={isLastStepInPage}
+        nextPage={nextPage}
       />
     </>,
     document.body

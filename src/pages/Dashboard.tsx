@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { 
@@ -47,7 +46,6 @@ const Dashboard = () => {
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [hasUnreadNotifications, setHasUnreadNotifications] = useState(true);
 
-  // Check if user is "logged in"
   useEffect(() => {
     const isLoggedIn = localStorage.getItem("isLoggedIn");
     if (!isLoggedIn) {
@@ -55,7 +53,6 @@ const Dashboard = () => {
     }
   }, [navigate]);
 
-  // Fetch user data with React Query
   const { 
     data: userData, 
     isLoading: isUserDataLoading, 
@@ -68,7 +65,6 @@ const Dashboard = () => {
     retry: 2
   });
 
-  // Fetch all portfolio data (for demo purposes)
   const { 
     data: portfolioData, 
     isLoading: isPortfolioDataLoading
@@ -79,7 +75,6 @@ const Dashboard = () => {
     retry: 2
   });
 
-  // Handle errors
   useEffect(() => {
     if (userDataError) {
       toast({
@@ -108,7 +103,6 @@ const Dashboard = () => {
     setHasUnreadNotifications(false);
   };
 
-  // Show loading state for the whole dashboard
   if (isUserDataLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -120,7 +114,6 @@ const Dashboard = () => {
     );
   }
 
-  // If we have a serious error and no data
   if (!userData) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -277,7 +270,6 @@ const Dashboard = () => {
 
         <div className="container py-8">
           <div className="grid gap-4 md:grid-cols-3 mb-8">
-            {/* Investment summary cards with staggered animations */}
             <Card className="overflow-hidden hover:shadow-md transition-shadow duration-300 animate-fade-in" style={{ animationDelay: "200ms" }}>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 bg-gradient-to-r from-primary/5 to-transparent">
                 <CardTitle className="text-sm font-medium">Total Investment</CardTitle>
@@ -322,7 +314,7 @@ const Dashboard = () => {
             <TabsContent value="portfolios" className="space-y-6">
               <div className="flex items-center justify-between mb-2">
                 <h2 className="text-xl font-semibold">Your Best Performing Portfolios</h2>
-                <Button size="sm" className="group bg-primary hover:bg-primary/90">
+                <Button size="sm" className="group bg-primary hover:bg-primary/90" onClick={() => navigate('/discover')}>
                   <Plus className="mr-1 h-4 w-4 transition-transform group-hover:rotate-90" />
                   Add New
                 </Button>
@@ -330,7 +322,6 @@ const Dashboard = () => {
               
               <div className="grid gap-4 md:grid-cols-3">
                 {isPortfolioDataLoading ? (
-                  // Show skeletons while loading
                   Array(3).fill(0).map((_, index) => (
                     <Card key={index} className="overflow-hidden">
                       <CardHeader className="pb-2">
@@ -345,7 +336,6 @@ const Dashboard = () => {
                     </Card>
                   ))
                 ) : (
-                  // Show actual portfolio data
                   userData.bestPerforming.map((portfolio, index) => (
                     <Card 
                       key={portfolio.title}
@@ -459,7 +449,6 @@ const Dashboard = () => {
               
               <div className="grid gap-4 md:grid-cols-3">
                 {isPortfolioDataLoading ? (
-                  // Show skeletons while loading
                   Array(3).fill(0).map((_, index) => (
                     <Card key={index} className="overflow-hidden">
                       <CardHeader className="pb-2">
@@ -475,7 +464,6 @@ const Dashboard = () => {
                     </Card>
                   ))
                 ) : (
-                  // Show actual recommendations
                   userData.recommendations.map((portfolio, index) => (
                     <Card 
                       key={portfolio.title} 

@@ -46,16 +46,17 @@ const Signup = () => {
     await new Promise(resolve => setTimeout(resolve, 1000));
 
     if (email && password && name) {
-      // For demo purposes - simulate successful registration
-      localStorage.setItem("isLoggedIn", "true");
+      // For demo purposes - simulate successful registration without automatic login
       localStorage.setItem("userEmail", email);
       localStorage.setItem("userName", name);
       
       toast({
         title: "Account created",
-        description: "Welcome to ThemeVest!",
+        description: "Please log in with your new account.",
       });
-      navigate("/dashboard");
+      
+      // Navigate to login page instead of dashboard
+      navigate("/login");
     } else {
       toast({
         variant: "destructive",
