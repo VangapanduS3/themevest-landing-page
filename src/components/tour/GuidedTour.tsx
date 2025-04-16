@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import { X, ChevronRight, ChevronLeft, Circle, Target, Info } from 'lucide-react';
+import { X, ChevronRight, ChevronLeft, Target, CircleDot } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useTourStore } from '@/components/tour/useTourStore';
@@ -13,6 +13,7 @@ export interface TourStep {
   content: string;
   position?: 'top' | 'right' | 'bottom' | 'left' | 'center';
   nextPage?: string; // Optional next page to navigate to after this step
+  actionRequired?: boolean; // Whether the user needs to interact with this element
 }
 
 interface HighlightProps {
@@ -81,6 +82,7 @@ interface TooltipProps {
   totalSteps: number;
   isLastStepInPage: boolean;
   nextPage?: string;
+  actionRequired?: boolean;
 }
 
 const Tooltip: React.FC<TooltipProps> = ({
@@ -94,7 +96,8 @@ const Tooltip: React.FC<TooltipProps> = ({
   currentStep,
   totalSteps,
   isLastStepInPage,
-  nextPage
+  nextPage,
+  actionRequired
 }) => {
   const [tooltipPosition, setTooltipPosition] = useState({ 
     top: 0, 
@@ -184,7 +187,7 @@ const Tooltip: React.FC<TooltipProps> = ({
     >
       <div className="flex justify-between items-center mb-2">
         <div className="flex items-center gap-2">
-          <Target className="h-4 w-4 text-primary" />
+          <CircleDot className="h-4 w-4 text-primary" />
           <h3 className="font-semibold text-foreground">{title}</h3>
         </div>
         <Button 
@@ -212,25 +215,35 @@ const Tooltip: React.FC<TooltipProps> = ({
             <ChevronLeft className="h-4 w-4 mr-1" />
             Back
           </Button>
-          <Button 
-            size="sm"
-            onClick={handleNextClick}
-            className="group"
-          >
-            {currentStep < totalSteps - 1 ? (
-              <>
-                Next
-                <ChevronRight className="h-4 w-4 ml-1 group-hover:translate-x-0.5 transition-transform" />
-              </>
-            ) : isLastStepInPage && nextPage ? (
-              <>
-                Continue
-                <ChevronRight className="h-4 w-4 ml-1 group-hover:translate-x-0.5 transition-transform" />
-              </>
-            ) : (
-              'Finish'
-            )}
-          </Button>
+          {actionRequired ? (
+            <Button 
+              size="sm"
+              variant="outline"
+              className="text-amber-500 border-amber-500"
+            >
+              Action Required
+            </Button>
+          ) : (
+            <Button 
+              size="sm"
+              onClick={handleNextClick}
+              className="group"
+            >
+              {currentStep < totalSteps - 1 ? (
+                <>
+                  Next
+                  <ChevronRight className="h-4 w-4 ml-1 group-hover:translate-x-0.5 transition-transform" />
+                </>
+              ) : isLastStepInPage && nextPage ? (
+                <>
+                  Continue
+                  <ChevronRight className="h-4 w-4 ml-1 group-hover:translate-x-0.5 transition-transform" />
+                </>
+              ) : (
+                'Finish'
+              )}
+            </Button>
+          )}
         </div>
       </div>
     </div>
@@ -249,6 +262,30 @@ export const GuidedTour: React.FC = () => {
     currentPage
   } = useTourStore();
   const [targetElement, setTargetElement] = useState<Element | null>(null);
+  const [waitingForUserAction, setWaitingForUserAction] = useState(false);
+
+  // Set up listener for elements that require user interaction
+  useEffect(() => {
+    if (!isOpen || !steps.length) return;
+
+    const currentStepData = steps[currentStep];
+    if (currentStepData?.actionRequired && targetElement) {
+      setWaitingForUserAction(true);
+      
+      const handleClick = () => {
+        setWaitingForUserAction(false);
+        next();
+      };
+      
+      targetElement.addEventListener('click', handleClick, { once: true });
+      
+      return () => {
+        targetElement.removeEventListener('click', handleClick);
+      };
+    } else {
+      setWaitingForUserAction(false);
+    }
+  }, [isOpen, currentStep, steps, targetElement, next]);
 
   useEffect(() => {
     if (!isOpen || !steps.length) return;
@@ -286,6 +323,7 @@ export const GuidedTour: React.FC = () => {
 
   const isLastStepInPage = currentStep === steps.length - 1;
   const nextPage = steps[currentStep]?.nextPage;
+  const actionRequired = steps[currentStep]?.actionRequired;
 
   return createPortal(
     <>
@@ -303,6 +341,7 @@ export const GuidedTour: React.FC = () => {
         totalSteps={steps.length}
         isLastStepInPage={isLastStepInPage}
         nextPage={nextPage}
+        actionRequired={actionRequired}
       />
     </>,
     document.body

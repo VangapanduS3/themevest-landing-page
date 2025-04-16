@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { 
@@ -137,7 +136,6 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-background pb-10">
-      {/* Header section similar to landing page */}
       <header className="border-b border-border">
         <div className="container mx-auto py-3 flex items-center justify-between">
           <div className="flex items-center gap-2">

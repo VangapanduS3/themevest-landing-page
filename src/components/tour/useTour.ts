@@ -24,7 +24,8 @@ export function useTour() {
     getCurrentPage,
     setTourActive,
     isTourActive,
-    next
+    next,
+    currentStep
   } = useTourStore();
   
   const location = useLocation();
@@ -35,17 +36,24 @@ export function useTour() {
     if (!isTourActive || !isOpen) return;
     
     const currentPage = getCurrentPage();
-    const currentStep = useTourStore.getState().currentStep;
+    const step = useTourStore.getState().currentStep;
     const steps = useTourStore.getState().steps;
     
     // Check if the current step has nextPage defined
-    if (steps[currentStep]?.nextPage) {
-      const nextPage = steps[currentStep]?.nextPage;
+    if (steps[step]?.nextPage) {
+      const nextPage = steps[step]?.nextPage;
       
       // This will be handled by the component's click handler
       // We only need to worry about auto-navigation if needed
+      console.log(`Current step has nextPage: ${nextPage}`);
     }
-  }, [isTourActive, isOpen, getCurrentPage]);
+
+    // Check for actionRequired flag
+    if (steps[step]?.actionRequired) {
+      console.log(`Step ${step} requires user interaction`);
+      // We'll handle this in the GuidedTour component
+    }
+  }, [isTourActive, isOpen, getCurrentPage, currentStep]);
 
   // Listen for route changes to update tour steps
   useEffect(() => {
@@ -134,7 +142,7 @@ export function useTour() {
     start();
   }, [location.pathname, navigate, setCurrentPage, setSteps, setTourActive, start]);
 
-  // New function to start tour directly from dashboard
+  // Function to start tour directly from dashboard
   const startDashboardTour = useCallback(() => {
     setTourActive(true);
     setCurrentPage('dashboard');

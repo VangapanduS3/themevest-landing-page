@@ -24,7 +24,7 @@ const UserSettings = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  // Parse the tab parameter from the URL
+  // Parse the tab parameter from the URL and update activeTab
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
     const tabParam = queryParams.get("tab");

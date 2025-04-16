@@ -63,7 +63,7 @@ export const dashboardPageTourSteps: TourStep[] = [
   {
     target: "button:has(.Settings)", // Target the settings button
     title: "Account Settings",
-    content: "Click here to access your account settings.",
+    content: "Click here to access your account settings and configure your payment methods and brokerage accounts.",
     position: "bottom",
     nextPage: "settings" // Navigate to settings page
   }
@@ -81,19 +81,22 @@ export const settingsPageTourSteps: TourStep[] = [
     target: "[value='payment']", // Target the payment tab
     title: "Payment Methods",
     content: "Set up your payment methods here to fund your investments.",
-    position: "right"
+    position: "right",
+    actionRequired: true // This indicates the user needs to click this element
   },
   {
     target: "button:has(.Plus)", // The add payment method button
     title: "Add Payment Method",
     content: "Click here to add a new payment method.",
-    position: "top"
+    position: "top",
+    actionRequired: true // This indicates the user needs to click this element
   },
   {
     target: "[value='brokerage']", // Target the brokerage tab
     title: "Connect Brokerages",
     content: "Connect your existing brokerage accounts here.",
-    position: "right"
+    position: "right",
+    actionRequired: true // This indicates the user needs to click this element
   },
   {
     target: "button:has(.Plus)", // The add brokerage button
